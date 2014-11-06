@@ -1,7 +1,7 @@
 package core.dataStructure.roundRobin;
 
-import core.dataStructure.roundRobin.exceptions.RoundRobinEmptyException;
 import core.dataStructure.linkedList.simple.OptimizedLinkSimple;
+import core.dataStructure.roundRobin.exceptions.RoundRobinEmptyException;
 
 
 public interface IRoundRobin<T> {

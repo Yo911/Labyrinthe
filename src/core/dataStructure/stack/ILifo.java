@@ -1,6 +1,7 @@
 package core.dataStructure.stack;
 
 import java.util.Iterator;
+
 import core.dataStructure.stack.exceptions.StackEmptyException;
 
 public interface ILifo<V> {
