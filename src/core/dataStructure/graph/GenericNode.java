@@ -3,8 +3,8 @@ package core.dataStructure.graph;
 import java.util.ArrayList;
 import java.util.List;
 
-import algo.graph.interfaces.IEdge;
-import algo.graph.interfaces.INode;
+import core.dataStructure.graph.interfaces.IEdge;
+import core.dataStructure.graph.interfaces.INode;
 
 
 public class GenericNode<K,V> implements INode<K,V> {

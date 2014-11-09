@@ -3,8 +3,8 @@ package core.dataStructure.graph;
 import java.util.HashMap;
 import java.util.Map;
 
-import algo.graph.interfaces.IEdge;
-import algo.graph.interfaces.INode;
+import core.dataStructure.graph.interfaces.IEdge;
+import core.dataStructure.graph.interfaces.INode;
 
 
 public class GenericEdge implements IEdge {

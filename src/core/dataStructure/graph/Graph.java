@@ -6,9 +6,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import algo.graph.interfaces.IEdge;
-import algo.graph.interfaces.IGraph;
-import algo.graph.interfaces.INode;
+import core.dataStructure.graph.interfaces.IEdge;
+import core.dataStructure.graph.interfaces.IGraph;
+import core.dataStructure.graph.interfaces.INode;
 
 public class Graph<K,V> implements IGraph<K,V> {
 
@@ -46,7 +46,7 @@ public class Graph<K,V> implements IGraph<K,V> {
 		nodes.remove(key);
 	}
 
-	public Collection<?> getNodes() {
-		return (Collection<?>) nodes;
+	public Collection<INode<K, V>> getNodes() {
+		return (Collection<INode<K, V>>) nodes;
 	}
 }
