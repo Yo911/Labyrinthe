@@ -42,7 +42,6 @@ public class Graph<K,V> implements IGraph<K,V> {
 				}
 			}
 		}
-		
 		nodes.remove(key);
 	}
 
