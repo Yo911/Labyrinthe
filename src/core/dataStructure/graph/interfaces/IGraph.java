@@ -7,4 +7,5 @@ public interface IGraph<K,V> {
 	public Collection<INode<K, V>> getNodes();
 	public void registerNode(INode<K, V> node);
 	public void unregisterNode(K key);
+	public boolean contains(INode<K, V> node);
 }

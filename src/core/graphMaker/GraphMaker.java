@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import core.dataStructure.graph.Coordonne;
 import core.dataStructure.graph.GenericEdge;
 import core.dataStructure.graph.GenericNode;
 import core.dataStructure.graph.Graph;
@@ -68,7 +69,8 @@ public class GraphMaker {
 					GenericNode<String, Object> n = new GenericNode<String, Object>(el + "");
 
 					n.setType(type);
-					nodes.put(k, n);
+					n.coordonne.setCoordonne(j, i);
+					nodes.put(n.coordonne, n);
 					graph.registerNode(n);
 					if (i != 0 && c != WALL) {
 						// GAUCHE
@@ -126,7 +128,7 @@ public class GraphMaker {
 		return graph;
 	}
 	
-	public Map<Integer, GenericNode<String, Object>> getNodes() {
+	public Map<Coordonne, GenericNode<String, Object>> getNodes() {
 		return nodes;
 	}
 	
@@ -155,7 +157,7 @@ public class GraphMaker {
 	private IGraph<String, Object> graph;
 	private List<Integer> depart  = new ArrayList<Integer>();
 	private List<Integer> arrival = new ArrayList<Integer>();
-	private Map<Integer, GenericNode<String, Object>> nodes = new HashMap<Integer, GenericNode<String, Object>>();
+	private Map<Coordonne, GenericNode<String, Object>> nodes = new HashMap<Coordonne, GenericNode<String, Object>>();
 	
 	public static final char FREE_SPACE = ' ';
 	public static final char BUSH       = 'G';

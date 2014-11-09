@@ -8,17 +8,11 @@ import core.dataStructure.graph.interfaces.INode;
 
 
 public class GenericNode<K,V> implements INode<K,V> {
-
-	private K key = null;
-	private V value = null;
-	private boolean used = false;
-	private String type;
-	
-	private List<IEdge> listEdge = null; 
 	
 	public GenericNode(K key) {
 		this.key = key;
 		listEdge = new ArrayList<IEdge>();
+		coordonne = new Coordonne();
 	}
 
 	public List<IEdge> getEdges() {
@@ -53,4 +47,12 @@ public class GenericNode<K,V> implements INode<K,V> {
 		this.used = used;
 	}
 
+	public Coordonne coordonne;
+
+	private K key = null;
+	private V value = null;
+	private boolean used = false;
+	private String type;
+	
+	private List<IEdge> listEdge = null; 
 }

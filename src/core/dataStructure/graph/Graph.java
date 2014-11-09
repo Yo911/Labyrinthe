@@ -49,4 +49,12 @@ public class Graph<K,V> implements IGraph<K,V> {
 	public Collection<INode<K, V>> getNodes() {
 		return (Collection<INode<K, V>>) nodes;
 	}
+	
+	public boolean contains(INode<K, V> node) {
+		for(K key : nodes.keySet()) {
+			if(nodes.get(key).equals(node))
+				return true;
+		}
+		return false;
+	}
 }
