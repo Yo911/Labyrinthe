@@ -21,6 +21,7 @@ public class GraphMaker {
 	
 	public GraphMaker(File f) throws IOException {
 		// TODO Auto-generated constructor stub
+		
 		try {
 			InputStream ips = new FileInputStream(f);
 			InputStreamReader ipsr=new InputStreamReader(ips);
@@ -34,58 +35,59 @@ public class GraphMaker {
 			while ((line = reader.readLine()) != null) {
 				if ( line.equals("\n") )
 						continue;
+				lineLength = line.length();
 				line = line.replace("\n", "");
 				text += line;
 				for (int j = 0; j < line.length(); j++) {
 					c = line.charAt(j);
-					if (c != WALL) {
-						int cost = 0;
-						char el  = 0;
-						String type = "";
-						if (c == FREE_SPACE) {
-							cost = 1;
-							el = FREE_SPACE;
-							type = "free";
-						}
-						if (c == BUSH) {
-							cost = 2;
-							el = BUSH;
-							type = "bush";
-						}
-						if (c == ARRIVAL) {
-							cost = 1;
-							el = ARRIVAL;
-							type = "arrival";
-							arrival.add(k);
-						}
-						if (c == DEPART) {
-							cost = 1;
-							el = DEPART;
-							type = "depart";
-							depart.add(k);
-						}
-						GenericNode<String, Object> n = new GenericNode<String, Object>(el + "");
-						
-						n.setType(type);
-						nodes.put(k, n);
-						graph.registerNode(n);
-						if (i != 0 && c != WALL) {
-							// GAUCHE
-							if (line.charAt(j - 1) != BUSH) {
-								new GenericEdge(n, nodes.get(k - 1), cost);
-							}
-							if (line.charAt(j - 1) == BUSH) {
-								new GenericEdge(n, nodes.get(k - 1), 2);
-							}
+					int cost = 0;
+					char el = WALL;
+					String type = "wall";
+					if (c == FREE_SPACE) {
+						cost = 1;
+						el = FREE_SPACE;
+						type = "free";
+					}
+					if (c == BUSH) {
+						cost = 2;
+						el = BUSH;
+						type = "bush";
+					}
+					if (c == ARRIVAL) {
+						cost = 1;
+						el = ARRIVAL;
+						type = "arrival";
+						arrival.add(k);
+					}
+					if (c == DEPART) {
+						cost = 1;
+						el = DEPART;
+						type = "depart";
+						depart.add(k);
+					}
+					GenericNode<String, Object> n = new GenericNode<String, Object>(el + "");
 
-							// HAUT
-							if (text.charAt(k - line.length()) != BUSH) {
-								new GenericEdge(n, nodes.get(k - line.length()), cost);
-							}
-							if (text.charAt(k - line.length()) == BUSH) {
-								new GenericEdge(n, nodes.get(k - line.length()), 2);
-							}
+					n.setType(type);
+					nodes.put(k, n);
+					graph.registerNode(n);
+					if (i != 0 && c != WALL) {
+						// GAUCHE
+						if (line.charAt(j - 1) != BUSH) {
+							new GenericEdge(n, nodes.get(k - 1), cost);
+						}
+						if (line.charAt(j - 1) == BUSH) {
+							new GenericEdge(n, nodes.get(k - 1), 2);
+						}
 
+						// HAUT
+						if (text.charAt(k - line.length()) != BUSH) {
+							new GenericEdge(n, nodes.get(k - line.length()), cost);
+						}
+						if (text.charAt(k - line.length()) == BUSH) {
+							new GenericEdge(n, nodes.get(k - line.length()), 2);
+						}
+
+						if (text.charAt(k - line.length()) != WALL && line.charAt(j - 1) != WALL) {
 							// HAUT - GAUCHE
 							if (text.charAt(k - line.length() - 1) != BUSH) {
 								new GenericEdge(n, nodes.get(k - line.length() - 1), cost);
@@ -93,7 +95,9 @@ public class GraphMaker {
 							if (text.charAt(k - line.length() - 1) == BUSH) {
 								new GenericEdge(n, nodes.get(k - line.length() - 1), 2);
 							}
+						}
 
+						if (text.charAt(k - line.length()) != WALL && line.charAt(j + 1) != WALL) {
 							// HAUT - DROITE
 							if (text.charAt(k - line.length() + 1) != BUSH) {
 								new GenericEdge(n, nodes.get(k - line.length() + 1), cost);
@@ -103,6 +107,7 @@ public class GraphMaker {
 							}
 						}
 					}
+
 					k++;
 				}
 				i++;
@@ -146,6 +151,7 @@ public class GraphMaker {
 	}
 
 	private int fileLength;
+	public int lineLength;
 	private IGraph<String, Object> graph;
 	private List<Integer> depart  = new ArrayList<Integer>();
 	private List<Integer> arrival = new ArrayList<Integer>();
