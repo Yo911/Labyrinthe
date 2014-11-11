@@ -33,6 +33,8 @@ public class GraphMaker {
 			String text = "";
 			char c = 0;
 			int i = 0, k = 0;
+			Coordonne coordonne = new Coordonne();
+			Coordonne ref       = new Coordonne();
 			while ((line = reader.readLine()) != null) {
 				if ( line.equals("\n") )
 						continue;
@@ -41,75 +43,72 @@ public class GraphMaker {
 				text += line;
 				for (int j = 0; j < line.length(); j++) {
 					c = line.charAt(j);
-					int cost = 0;
-					char el = WALL;
-					String type = "wall";
-					if (c == FREE_SPACE) {
-						cost = 1;
-						el = FREE_SPACE;
-						type = "free";
-					}
-					if (c == BUSH) {
-						cost = 2;
-						el = BUSH;
-						type = "bush";
-					}
-					if (c == ARRIVAL) {
-						cost = 1;
-						el = ARRIVAL;
-						type = "arrival";
-						arrival.add(k);
-					}
-					if (c == DEPART) {
-						cost = 1;
-						el = DEPART;
-						type = "depart";
-						depart.add(k);
-					}
-					GenericNode<String, Object> n = new GenericNode<String, Object>(el + "");
+					coordonne.setCoordonne(j, i);
+					ref.setCoordonne(j, i);
+					if( c != WALL ) {
+						int cost = 0;
+						char el = 0;
+						String type = "";
+						if (c == FREE_SPACE) {
+							cost = 1;
+							el = FREE_SPACE;
+							type = "free";
+						}
+						if (c == BUSH) {
+							cost = 2;
+							el = BUSH;
+							type = "bush";
+						}
+						if (c == ARRIVAL) {
+							cost = 1;
+							el = ARRIVAL;
+							type = "arrival";
+							arrival.add(coordonne);
+						}
+						if (c == DEPART) {
+							cost = 1;
+							el = DEPART;
+							type = "depart";
+							depart.add(coordonne);
+						}
+						GenericNode<String, Object> n = new GenericNode<String, Object>(el + "");
+	
+						n.setType(type);
+						n.coordonne.setCoordonne(coordonne);
+						nodes.put(coordonne, n);
+						graph.registerNode(n);
+						if (i != 0 && c != WALL) {
+							// GAUCHE
+							if (line.charAt(j - 1) != WALL) {
+								ref.setCoordonne(coordonne);
+								ref.setX(coordonne.getX() - 1);
+								new GenericEdge(n, nodes.get(ref), (line.charAt(j - 1) != BUSH) ? cost : 2);
+							}
+	
+							// HAUT
+							if (text.charAt(k - line.length()) != WALL) {
+								ref.setCoordonne(coordonne);
+								ref.setX(coordonne.getY() - 1);
+								new GenericEdge(n, nodes.get(ref), (text.charAt(k - line.length()) != BUSH) ? cost : 2);
+							}
 
-					n.setType(type);
-					n.coordonne.setCoordonne(j, i);
-					nodes.put(n.coordonne, n);
-					graph.registerNode(n);
-					if (i != 0 && c != WALL) {
-						// GAUCHE
-						if (line.charAt(j - 1) != BUSH) {
-							new GenericEdge(n, nodes.get(k - 1), cost);
-						}
-						if (line.charAt(j - 1) == BUSH) {
-							new GenericEdge(n, nodes.get(k - 1), 2);
-						}
-
-						// HAUT
-						if (text.charAt(k - line.length()) != BUSH) {
-							new GenericEdge(n, nodes.get(k - line.length()), cost);
-						}
-						if (text.charAt(k - line.length()) == BUSH) {
-							new GenericEdge(n, nodes.get(k - line.length()), 2);
-						}
-
-						if (text.charAt(k - line.length()) != WALL && line.charAt(j - 1) != WALL) {
 							// HAUT - GAUCHE
-							if (text.charAt(k - line.length() - 1) != BUSH) {
-								new GenericEdge(n, nodes.get(k - line.length() - 1), cost);
+							if (text.charAt(k - line.length()) != WALL && line.charAt(j - 1) != WALL && text.charAt(k - line.length() - 1) != WALL) {
+								ref.setCoordonne(coordonne);
+								ref.setX(coordonne.getX() - 1);
+								ref.setX(coordonne.getY() - 1);
+								new GenericEdge(n, nodes.get(ref), (text.charAt(k - line.length() - 1) != BUSH) ? cost : 2);
 							}
-							if (text.charAt(k - line.length() - 1) == BUSH) {
-								new GenericEdge(n, nodes.get(k - line.length() - 1), 2);
-							}
-						}
 
-						if (text.charAt(k - line.length()) != WALL && line.charAt(j + 1) != WALL) {
 							// HAUT - DROITE
-							if (text.charAt(k - line.length() + 1) != BUSH) {
-								new GenericEdge(n, nodes.get(k - line.length() + 1), cost);
-							}
-							if (text.charAt(k - line.length() + 1) == BUSH) {
-								new GenericEdge(n, nodes.get(k - line.length() + 1), 2);
+							if (text.charAt(k - line.length()) != WALL && line.charAt(j + 1) != WALL && text.charAt(k - line.length() + 1) != WALL) {
+								ref.setCoordonne(coordonne);
+								ref.setX(coordonne.getX() - 1);
+								ref.setX(coordonne.getY() + 1);
+								new GenericEdge(n, nodes.get(ref), (text.charAt(k - line.length() + 1) != BUSH) ? cost : 2);
 							}
 						}
 					}
-
 					k++;
 				}
 				i++;
@@ -136,27 +135,23 @@ public class GraphMaker {
 		return fileLength;
 	}
 	
-	public List<Integer> getDepart() {
+	public int getLineLength() {
+		return lineLength;
+	}
+	
+	public List<Coordonne> getDepart() {
 		return depart;
 	}
 
-	public void setDepart(List<Integer> depart) {
-		this.depart = depart;
-	}
-
-	public List<Integer> getArrival() {
+	public List<Coordonne> getArrival() {
 		return arrival;
 	}
 
-	public void setArrival(List<Integer> arrival) {
-		this.arrival = arrival;
-	}
-
 	private int fileLength;
-	public int lineLength;
+	private int lineLength;
 	private IGraph<String, Object> graph;
-	private List<Integer> depart  = new ArrayList<Integer>();
-	private List<Integer> arrival = new ArrayList<Integer>();
+	private List<Coordonne> depart  = new ArrayList<Coordonne>();
+	private List<Coordonne> arrival = new ArrayList<Coordonne>();
 	private Map<Coordonne, GenericNode<String, Object>> nodes = new HashMap<Coordonne, GenericNode<String, Object>>();
 	
 	public static final char FREE_SPACE = ' ';
