@@ -107,4 +107,20 @@ public class LinkedStack<V> implements ILifo<V>, Cloneable {
 		return i;
 	}
 
+	public LinkedStack<V> clone() {
+		LinkedStack<V> clone = new LinkedStack<V>();
+		LinkedStack<V> tmp = new LinkedStack<V>();
+		Iterator<V> it = iterator();
+		while(it.hasNext()) {
+			tmp.push(it.next());
+		}
+		while(!tmp.isEmpty()) {
+			try {
+				clone.push(tmp.pop());
+			} catch (StackEmptyException e) {
+				throw new RuntimeException("Erreur de programmation LinkedStack.clone");
+			}
+		}
+		return clone;
+	}
 }
