@@ -15,8 +15,8 @@ import core.dataStructure.graph.interfaces.INode;
 public class Graph<K,V> implements IGraph<K,V> {
 
 	private Map<K,INode<K,V>> nodes = new HashMap<K,INode<K,V>>();
-	private List<Coordonne> depart  = new ArrayList<Coordonne>();
-	private List<Coordonne> arrival = new ArrayList<Coordonne>();
+	private List<INode<K, V>> depart  = new ArrayList<INode<K, V>>();
+	private List<INode<K, V>> arrival = new ArrayList<INode<K, V>>();
 	
 	public INode<K, V> getNode(K key) {
 		return nodes.get(key);
@@ -62,19 +62,19 @@ public class Graph<K,V> implements IGraph<K,V> {
 		return false;
 	}
 
-	public List<Coordonne> getDepart() {
+	public List<INode<K, V>> getDepart() {
 		return depart;
 	}
 
-	public void addDepart(Coordonne depart) {
+	public void addDepart(INode<K, V> depart) {
 		this.depart.add(depart);
 	}
 
-	public List<Coordonne> getArrival() {
+	public List<INode<K, V>> getArrival() {
 		return arrival;
 	}
 
-	public void addArrival(Coordonne arrival) {
+	public void addArrival(INode<K, V> arrival) {
 		this.arrival.add(arrival);
 	}
 }

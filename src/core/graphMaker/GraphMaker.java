@@ -63,16 +63,20 @@ public class GraphMaker {
 							cost = 1;
 							el = ARRIVAL;
 							type = "arrival";
-							graph.addArrival(coordonne);
 						}
 						if (c == DEPART) {
 							cost = 1;
 							el = DEPART;
 							type = "depart";
-							graph.addDepart(coordonne);
 						}
 						GenericNode<String, Object> n = new GenericNode<String, Object>(el + "");
-	
+
+						if (c == ARRIVAL) {
+							graph.addArrival(n);
+						}
+						if (c == DEPART) {
+							graph.addDepart(n);
+						}
 						n.setType(type);
 						n.coordonne.setCoordonne(coordonne);
 						nodes.put(coordonne, n);
