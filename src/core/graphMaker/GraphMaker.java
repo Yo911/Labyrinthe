@@ -63,13 +63,13 @@ public class GraphMaker {
 							cost = 1;
 							el = ARRIVAL;
 							type = "arrival";
-							arrival.add(coordonne);
+							graph.addArrival(coordonne);
 						}
 						if (c == DEPART) {
 							cost = 1;
 							el = DEPART;
 							type = "depart";
-							depart.add(coordonne);
+							graph.addDepart(coordonne);
 						}
 						GenericNode<String, Object> n = new GenericNode<String, Object>(el + "");
 	
@@ -139,19 +139,9 @@ public class GraphMaker {
 		return lineLength;
 	}
 	
-	public List<Coordonne> getDepart() {
-		return depart;
-	}
-
-	public List<Coordonne> getArrival() {
-		return arrival;
-	}
-
 	private int fileLength;
 	private int lineLength;
 	private IGraph<String, Object> graph;
-	private List<Coordonne> depart  = new ArrayList<Coordonne>();
-	private List<Coordonne> arrival = new ArrayList<Coordonne>();
 	private Map<Coordonne, GenericNode<String, Object>> nodes = new HashMap<Coordonne, GenericNode<String, Object>>();
 	
 	public static final char FREE_SPACE = ' ';
