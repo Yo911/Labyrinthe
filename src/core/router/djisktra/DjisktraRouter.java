@@ -1,4 +1,4 @@
-package core.djisktra;
+package core.router.djisktra;
 
 import java.util.AbstractMap;
 import java.util.Comparator;
@@ -13,6 +13,8 @@ import core.dataStructure.graph.interfaces.IEdge;
 import core.dataStructure.graph.interfaces.INode;
 import core.dataStructure.queue.priority.LinkedPriorityQueue;
 import core.dataStructure.stack.exceptions.StackEmptyException;
+import core.router.IRouter;
+import core.router.Path;
 
 public class DjisktraRouter<K,V> implements IRouter<K,V>{
 
@@ -43,12 +45,17 @@ public class DjisktraRouter<K,V> implements IRouter<K,V>{
 		this.comparator = comparator;
 	}
 	
-	public Path findRoute(INode<K,V> start,INode<K,V> end) {
+	public Path findRoute(INode<K,V> start,INode<K,V> end, Set<INode<K,V>> forbiddenSteps) {
 		setRoute(start,end);
-		return findRoute();
+		return findRoute(forbiddenSteps);
 	}
 	
-	private Path findRoute() {
+	@Override
+	public Path findRoute(INode<K, V> start, INode<K, V> end) {
+		return findRoute(start,end,null);
+	}
+	
+	private Path findRoute(Set<INode<K, V>> forbiddenSteps) {
 		
 		if(this.comparator == null || this.graph == null || this.start == null || this.end == null) {
 			throw new RuntimeException();
@@ -59,11 +66,12 @@ public class DjisktraRouter<K,V> implements IRouter<K,V>{
 		}
 		
 		Path path = new Path(start);
-		NextStepsPriorityQueue queue = new NextStepsPriorityQueue();  
+		NextStepsPriorityQueue<K,V> queue = new NextStepsPriorityQueue<>();
+		queue.addForbiddenNextSteps(forbiddenSteps);
 		queue.add(path);
 		
 		try {
-			while(!queue.peek().peek().equals(end)) {
+			while(!queue.peek().peek().getKey().equals(end)) {
 				queue.getNextStep();
 			}
 		} catch (StackEmptyException e) {
@@ -73,25 +81,30 @@ public class DjisktraRouter<K,V> implements IRouter<K,V>{
 		return queue.peek();
 	}
 
-	private class NextStepsPriorityQueue extends LinkedPriorityQueue<Path> {
+	private class NextStepsPriorityQueue<A,E> extends LinkedPriorityQueue<Path> {
 
 		private Set<INode<?,?>> markedNodes = new HashSet<INode<?,?>>();
+		private Set<INode<A,E>> forbiddenNextSteps;
 		
 		public NextStepsPriorityQueue() {
 			super(comparator);
 		}
 
+		public void addForbiddenNextSteps(Set<INode<A,E>> forbiddenNextSteps) {
+			this.forbiddenNextSteps = forbiddenNextSteps;
+		}
+
 		public void getNextStep() {
 			Path path = remove();
 			try {
-				removeMarkedNode(path.peek());
+				removeMarkedNode(path.peek().getKey());
 			} catch (StackEmptyException e) {
 				throw new RuntimeException("Erreur de programmation getNextStep");
 			}
 			addValidePathFrom(path);
 		}
 		
-		private void removeMarkedNode(INode<?, ?> node) {
+		private void removeMarkedNode(INode<?,?> node) {
 			markedNodes.add(node);
 			Iterator<Path> it = iterator();
 			while(it.hasNext()) {
@@ -109,7 +122,7 @@ public class DjisktraRouter<K,V> implements IRouter<K,V>{
 		public void addValidePathFrom(Path path) {
 			INode<K,V> node = null;
 			try {
-				node = (INode<K, V>) path.peek();
+				node = (INode<K, V>) path.peek().getKey();
 			} catch (StackEmptyException e) {
 				throw new RuntimeException("Erreur de programmation addValidePathFrom");
 			}
@@ -118,12 +131,14 @@ public class DjisktraRouter<K,V> implements IRouter<K,V>{
 			Set<Entry<INode<K,V>,Integer>> Neighbours = getNeighBours(node);
 			
 			for(Entry<INode<K,V>,Integer> neighboor : Neighbours) {
-				if(!path.contains(neighboor.getKey()) && !markedNodes.contains(neighboor.getKey())) {
-					newPath = path.clone();
-					newPath.add(neighboor.getKey(), neighboor.getValue());
-					add(newPath);
+				if(!path.contains(neighboor.getKey()) && !markedNodes.contains(neighboor.getKey()) 
+						&& (forbiddenNextSteps == null || !forbiddenNextSteps.contains(neighboor.getKey()))) {
+						newPath = path.clone();
+						newPath.add(neighboor.getKey(), neighboor.getValue());
+						add(newPath);
 				}
 			}
+			forbiddenNextSteps = null;
 		}
 
 		@SuppressWarnings("unchecked")

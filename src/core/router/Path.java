@@ -1,4 +1,4 @@
-package core.djisktra;
+package core.router;
 
 import java.util.AbstractMap;
 import java.util.Iterator;
@@ -29,14 +29,14 @@ public class Path implements Cloneable {
 		path.push(new AbstractMap.SimpleEntry<INode<?,?>,Integer>(node, cost));
 	}
 	
-	public INode<?,?> peek() throws StackEmptyException {
-		return path.peek().getKey();
+	public Entry<INode<?, ?>, Integer> peek() throws StackEmptyException {
+		return path.peek();
 	}
 	
-	public INode<?,?> pop() throws StackEmptyException {
+	public Entry<INode<?, ?>, Integer> pop() throws StackEmptyException {
 		Entry<INode<?,?>,Integer> node = path.pop();
 		cost -= node.getValue();
-		return node.getKey();
+		return node;
 	}
 
 	public int getCost() {
