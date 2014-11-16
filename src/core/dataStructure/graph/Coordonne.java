@@ -1,6 +1,8 @@
 package core.dataStructure.graph;
 
-public class Coordonne {
+import core.dataStructure.graph.interfaces.ICoordonne;
+
+public class Coordonne implements ICoordonne {
 	
 	public Coordonne() {
 		// TODO Auto-generated constructor stub
