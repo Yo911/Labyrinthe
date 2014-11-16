@@ -27,13 +27,9 @@ import core.graphMaker.GraphMaker;
 
 public class GUI extends JFrame implements ActionListener {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	public GUI() {
-		// TODO Auto-generated constructor stub
 		Listen l = new Listen();
 		addWindowListener(l);
 		dimension = Toolkit.getDefaultToolkit().getScreenSize();
@@ -41,7 +37,7 @@ public class GUI extends JFrame implements ActionListener {
 		width = (int) dimension.getWidth() / 2;
 		height = 700;
 		width = 1500;
-		setPreferredSize(new Dimension(width, height));// changed it to preferredSize, Thanks!
+		setPreferredSize(new Dimension(width, height));
 		setLocation(1, 1);
 		setTitle("PITITE SOURIS !! ");
 
@@ -51,8 +47,9 @@ public class GUI extends JFrame implements ActionListener {
 		final GridBagConstraints gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.BOTH;
 		
-
 		final JPanel jp = new JPanel();
+//		JPanel bottomPanel = new JPanel();
+//		JTextField[] nbSourisByGate;
 
 		setLayout(bl);
 		jp.setLayout(gbl);
@@ -62,7 +59,6 @@ public class GUI extends JFrame implements ActionListener {
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
 				
 				// création de la boîte de dialogue
 		        JFileChooser fileChooser = new JFileChooser();
@@ -82,6 +78,8 @@ public class GUI extends JFrame implements ActionListener {
 							Map<String, GenericNode<String, Object>> nodes = gm.getNodes();
 							int lengthMax = gm.getLength();
 							int iMax = gm.getLineLength();
+							
+							
 							for(int j = 0 ; j < lengthMax / iMax ; j++) {
 								for(int i = 0; i < iMax; i++) {
 									Coordonne co = new Coordonne(i, j);
@@ -89,7 +87,6 @@ public class GUI extends JFrame implements ActionListener {
 									gbc.gridx = i;
 									gbc.gridheight = 1;
 									gbc.gridwidth = 1;
-	//								jp.add(new JLabel(c + ""), gbc);
 									String img = "wall.png";
 									GenericNode<String, Object> node = nodes.get(co.toString());
 									if ( node != null ) {
@@ -102,13 +99,16 @@ public class GUI extends JFrame implements ActionListener {
 									revalidate();
 								}
 							}
+							
+//							for(int i = 0; i < graph.getDepart().size() ; i++) {
+//								
+//							}
 						} else {
 							jp.add(new Label("The file isn't good ! "));
 							jp.repaint();
 							revalidate();
 						}
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -127,7 +127,6 @@ public class GUI extends JFrame implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		// TODO Auto-generated method stub
 		
 	}
 

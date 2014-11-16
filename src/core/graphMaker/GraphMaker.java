@@ -26,6 +26,7 @@ public class GraphMaker {
 		try {
 			InputStream ips = new FileInputStream(f);
 			InputStreamReader ipsr=new InputStreamReader(ips);
+			@SuppressWarnings("resource")
 			BufferedReader reader = new BufferedReader(ipsr);
 			
 			graph = new Graph<String, Object>();
