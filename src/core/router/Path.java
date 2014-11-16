@@ -15,15 +15,20 @@ public class Path implements Cloneable {
 	private LinkedStack<Entry<INode<?,?>,Integer>> path;
 	
 	public Path(INode<?,?> node) {
-		cost = 0;
-		path = new LinkedStack<Entry<INode<?,?>,Integer>>();
+		this();
 		path.push(new AbstractMap.SimpleEntry<INode<?,?>,Integer>(node, 0));
 	}
 	
 	private Path() {
-		
+		cost = 0;
+		path = new LinkedStack<Entry<INode<?,?>,Integer>>();
 	}
 	
+	private Path(LinkedStack<Entry<INode<?, ?>, Integer>> clone, int cost) {
+		this.cost = cost;
+		this.path = clone;
+	}
+
 	public void add(INode<?,?> node, int cost) {
 		this.cost += cost;
 		path.push(new AbstractMap.SimpleEntry<INode<?,?>,Integer>(node, cost));
@@ -53,13 +58,25 @@ public class Path implements Cloneable {
 	}
 	
 	public Path clone() {
-		Path clone = new Path();
-		clone.cost = cost;
-		clone.path = path.clone();
-		return clone;
+		return new Path(path.clone(),cost);
 	}
 	
 	public Iterator<Entry<INode<?,?>,Integer>> iterator() {
 		return path.iterator();
+	}
+
+	public Path revert() {
+		Path tmp = clone();
+		Path revert = new Path();
+		Entry<INode<?, ?>, Integer> node;
+		while(true) {
+			try {
+				node = tmp.pop();
+			} catch (StackEmptyException e) {
+				break;
+			}
+			revert.add(node.getKey(),node.getValue());
+		}
+		return revert;
 	}
 }

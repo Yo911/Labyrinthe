@@ -52,11 +52,11 @@ public class GenericNode<K,V> implements INode<K,V> {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Set<Entry<INode<?,?>,Integer>> getNeighBours() {
-		Set<Entry<INode<?,?>,Integer>> Neighbours = new HashSet<>();
+	public Set<Entry<INode<K,V>,Integer>> getNeighBours() {
+		Set<Entry<INode<K,V>,Integer>> Neighbours = new HashSet<>();
 		List<IEdge> edges = getEdges();
 		for(IEdge edj : edges) {
-			Neighbours.add(new AbstractMap.SimpleEntry<INode<?,?>,Integer>((INode<K,V>)edj.getOther(this),  (Integer) edj.getAttribute("cost")));
+			Neighbours.add(new AbstractMap.SimpleEntry<INode<K,V>,Integer>((INode<K,V>)edj.getOther(this),  (Integer) edj.getAttribute("cost")));
 		}
 		return Neighbours;
 	}

@@ -10,6 +10,6 @@ public interface INode<K, V> extends IElement{
     public List<IEdge> getEdges();
 	public boolean isUsed();
 	public void setUsed(boolean used);
-	public Set<Entry<INode<?, ?>, Integer>> getNeighBours();
+	public Set<Entry<INode<K,V>, Integer>> getNeighBours();
 }
 
