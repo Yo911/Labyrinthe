@@ -13,10 +13,12 @@ import java.util.List;
 import java.util.Map;
 
 import core.dataStructure.graph.Coordonne;
+import core.dataStructure.graph.Gate;
 import core.dataStructure.graph.GenericEdge;
 import core.dataStructure.graph.GenericNode;
 import core.dataStructure.graph.Graph;
 import core.dataStructure.graph.interfaces.IGraph;
+import core.dataStructure.graph.interfaces.INode;
 
 public class GraphMaker {
 	
@@ -72,36 +74,31 @@ public class GraphMaker {
 							cost = 1;
 							el = DEPART;
 							type = "depart";
+							doors.add(coordonne);
 						}
 						GenericNode<String, Object> n = new GenericNode<String, Object>(el + "");
 
-						if (c == ARRIVAL) {
-							graph.addArrival(n);
-						}
-						if (c == DEPART) {
-							graph.addDepart(n);
-						}
 						n.setType(type);
 						n.coordonne.setCoordonne(coordonne);
 						nodes.put(ref.toString(), n);
 						graph.registerNode(n);
 						if (i != 0 && c != WALL) {
 							// GAUCHE
-							if (line.charAt(j - 1) != WALL) {
+							if (line.charAt(j - 1) != WALL && line.charAt(j - 1) != DEPART) {
 								ref.setCoordonne(coordonne);
 								ref.setX(coordonne.getX() - 1);
 								new GenericEdge(n, nodes.get(ref.toString()), (line.charAt(j - 1) != BUSH) ? cost : 2);
 							}
 	
 							// HAUT
-							if (text.charAt(k - line.length()) != WALL) {
+							if (text.charAt(k - line.length()) != WALL && text.charAt(k - line.length()) != DEPART) {
 								ref.setCoordonne(coordonne);
 								ref.setY(coordonne.getY() - 1);
 								new GenericEdge(n, nodes.get(ref.toString()), (text.charAt(k - line.length()) != BUSH) ? cost : 2);
 							}
 
 							// HAUT - GAUCHE
-							if (text.charAt(k - line.length()) != WALL && line.charAt(j - 1) != WALL && text.charAt(k - line.length() - 1) != WALL) {
+							if (text.charAt(k - line.length()) != WALL && line.charAt(j - 1) != WALL && text.charAt(k - line.length() - 1) != WALL && text.charAt(k - line.length() - 1) != DEPART) {
 								ref.setCoordonne(coordonne);
 								ref.setX(coordonne.getX() - 1);
 								ref.setY(coordonne.getY() - 1);
@@ -109,7 +106,7 @@ public class GraphMaker {
 							}
 
 							// HAUT - DROITE
-							if (text.charAt(k - line.length()) != WALL && line.charAt(j + 1) != WALL && text.charAt(k - line.length() + 1) != WALL) {
+							if (text.charAt(k - line.length()) != WALL && line.charAt(j + 1) != WALL && text.charAt(k - line.length() + 1) != WALL && text.charAt(k - line.length() + 1) != DEPART) {
 								ref.setCoordonne(coordonne);
 								ref.setX(coordonne.getX() + 1);
 								ref.setY(coordonne.getY() - 1);
@@ -125,10 +122,58 @@ public class GraphMaker {
 			reader.close();
 			ipsr.close();
 			ips.close();
+			initDoors(getGraph(), this);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public void initDoors(IGraph<String, Object> graph, GraphMaker gm) {
+		for ( int i = 0; i < doors.size(); i++ ) {
+			List<INode<String,Object>> allAround = getNodeAround(doors.get(i));
+			gm.getGraph().addDepart(new Gate<String, Object>(allAround, graph));
+		}
+	}
+	
+	private List<INode<String,Object>> getNodeAround(Coordonne c) {
+		List<INode<String,Object>> around = new ArrayList<>();
+		Coordonne co = new Coordonne(c);
+		
+		// HAUT, BAS, GAUCHE, DROITE
+		co.setX(c.getX() - 1);
+		if(canAddInNodes(co))
+			around.add(nodes.get(co.toString()));
+		co.setX(c.getX() + 1);
+		if(canAddInNodes(co))
+			around.add(nodes.get(co.toString()));
+		co.setX(c.getX());
+		co.setY(c.getY() - 1);
+		if(canAddInNodes(co))
+			around.add(nodes.get(co.toString()));
+		co.setY(c.getY() + 1);
+		if(canAddInNodes(co))
+			around.add(nodes.get(co.toString()));
+
+		// HAUT - GAUCHE
+		co.setX( c.getX() - 1 );
+		co.setY( c.getY() - 1 );
+		if(canAddInNodes(co))
+			around.add(nodes.get(co.toString()));
+		
+		// HAUT - DROITE
+		co.setX( c.getX() + 1 );
+		co.setY( c.getY() - 1 );
+		if(canAddInNodes(co))
+			around.add(nodes.get(co.toString()));
+		
+		return around;
+	}
+	
+	private boolean canAddInNodes(Coordonne c) {
+		if( nodes.get(c.toString()).getValue() != WALL + "" && nodes.get(c.toString()).getValue() != DEPART + "" )
+			return true;
+		return false;
 	}
 	
 	public boolean isWellFormed() {
@@ -160,6 +205,7 @@ public class GraphMaker {
 	private IGraph<String, Object> graph;
 	private Map<String, GenericNode<String, Object>> nodes = new HashMap<String, GenericNode<String, Object>>();
 	private boolean wellFormed = true;
+	private List<Coordonne> doors = new ArrayList<>();
 	
 	public static final char FREE_SPACE = ' ';
 	public static final char BUSH       = 'G';

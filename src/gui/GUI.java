@@ -70,27 +70,7 @@ public class GUI extends JFrame implements ActionListener {
 						gm = new GraphMaker(file);
 						if( drawField(gm) ) {
 							
-							for ( int i = 0; i < gm.getGraph().getDepart().size(); i++ ) {
-								JLabel nbMousesByGateLabel = new JLabel( "Porte" + (i + 1) );
-								bottomPanel.add(nbMousesByGateLabel);
-								JTextField nbMousesByGate = new JTextField( "Porte" + (i + 1) );
-								bottomPanel.add(nbMousesByGate);
-							}
-							JButton lancer = new JButton("Lachez les souris !!");
-							
-							lancer.addActionListener(new ActionListener() {
-
-								@Override
-								public void actionPerformed(ActionEvent arg0) {
-									// TODO Auto-generated method stub
-									
-								}
-								
-							});
-							
-							bottomPanel.add(lancer);
-							bottomPanel.repaint();
-							revalidate();
+							getDetails(gm);
 						} else {
 							jp.add(new Label("The file isn't good ! "));
 							jp.repaint();
@@ -143,6 +123,30 @@ public class GUI extends JFrame implements ActionListener {
 			}
 		}
 		return true;
+	}
+	
+	private void getDetails(GraphMaker gm) {
+		for ( int i = 0; i < gm.getGraph().getDepart().size(); i++ ) {
+			JLabel nbMousesByGateLabel = new JLabel( "Porte" + (i + 1) );
+			bottomPanel.add(nbMousesByGateLabel);
+			JTextField nbMousesByGate = new JTextField( "Porte" + (i + 1) );
+			bottomPanel.add(nbMousesByGate);
+		}
+		JButton lancer = new JButton("Lachez les souris !!");
+		
+		lancer.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
+		
+		bottomPanel.add(lancer);
+		bottomPanel.repaint();
+		revalidate();
 	}
 	
 	@Override
