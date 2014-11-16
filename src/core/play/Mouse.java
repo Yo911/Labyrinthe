@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import core.dataStructure.graph.Graph;
+
+import core.dataStructure.graph.interfaces.IGraph;
 import core.dataStructure.graph.interfaces.INode;
 import core.dataStructure.queue.priority.LinkedPriorityQueue;
 import core.dataStructure.stack.exceptions.StackEmptyException;
@@ -18,20 +19,19 @@ public class Mouse<K,V> implements IMouse<K,V> {
 	private INode<K,V> cheese;
 	private INode<K,V> location;
 	private int counter;
-	private Graph<K,V> map;
+	private IGraph<K,V> map;
 	private IRouter<K,V> router = new DjisktraRouter<>();
 	private Path route;
 	private boolean canMove;
 	
-	public Mouse(INode<K,V> location, Graph<K,V> map, int counter) {
-		this.location = location;
-		this.counter = counter;
+	public Mouse(INode<K,V> location, IGraph<K,V> map, int counter) {
+		setLocation(location,counter);
 		this.map = map;
 		router.setComparator(CheeseSettings.getComparator());
 		router.setGraph(map);
 		chooseCloserCheese();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private void chooseCloserCheese() {
 		List<INode<K,V>> cheeses = map.getArrival();
@@ -69,10 +69,12 @@ public class Mouse<K,V> implements IMouse<K,V> {
 	}
 
 	private void leaveLocation() {
+		if(this.location == null) return;
 		this.location.setUsed(false);
 	}
 	
 	private void settleOnLocation() {
+		if(this.location == null) return;
 		this.location.setUsed(true);
 	}
 	

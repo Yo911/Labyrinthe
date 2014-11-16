@@ -16,4 +16,5 @@ public interface IRoundRobin<T> {
 	public int size();
 	public boolean isEmpty();
 	public boolean equals(OptimizedLinkSimple<T> l) throws RoundRobinEmptyException;
+	public boolean isEquals(T t) throws RoundRobinEmptyException;
 }

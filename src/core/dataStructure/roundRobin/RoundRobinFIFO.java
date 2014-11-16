@@ -166,4 +166,9 @@ public class RoundRobinFIFO<T> implements IRoundRobin<T> {
 	public int size() {
 		return size;
 	}
+
+	@Override
+	public boolean isEquals(T t) throws RoundRobinEmptyException {
+		return previous.getValue().equals(t);
+	}
 }

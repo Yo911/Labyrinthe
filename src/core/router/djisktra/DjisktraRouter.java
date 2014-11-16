@@ -6,7 +6,8 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import core.dataStructure.graph.Graph;
+
+import core.dataStructure.graph.interfaces.IGraph;
 import core.dataStructure.graph.interfaces.INode;
 import core.dataStructure.queue.priority.LinkedPriorityQueue;
 import core.dataStructure.stack.exceptions.StackEmptyException;
@@ -15,12 +16,12 @@ import core.router.Path;
 
 public class DjisktraRouter<K,V> implements IRouter<K,V>{
 
-	private Graph<K,V> graph;
+	private IGraph<K,V> graph;
 	private INode<K,V> start;
 	private INode<K,V> end;
 	private Comparator<Path> comparator;
 	
-	public DjisktraRouter(Graph<K,V> graph, Comparator<Path> comparator) {
+	public DjisktraRouter(IGraph<K,V> graph, Comparator<Path> comparator) {
 		this.graph = graph;
 		this.comparator = comparator;
 	}
@@ -29,7 +30,7 @@ public class DjisktraRouter<K,V> implements IRouter<K,V>{
 		this(null, null);
 	}
 	
-	public void setGraph(Graph<K,V> graph) {
+	public void setGraph(IGraph<K,V> graph) {
 		this.graph = graph;
 	}
 	
