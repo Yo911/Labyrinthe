@@ -20,6 +20,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import core.dataStructure.graph.Coordonne;
 import core.dataStructure.graph.GenericNode;
@@ -41,15 +42,8 @@ public class GUI extends JFrame implements ActionListener {
 		setLocation(1, 1);
 		setTitle("PITITE SOURIS !! ");
 
-		BorderLayout bl = new BorderLayout();
-		BorderLayout bl2 = new BorderLayout();
-		GridBagLayout gbl = new GridBagLayout();
-		final GridBagConstraints gbc = new GridBagConstraints();
 		gbc.fill = GridBagConstraints.BOTH;
 		
-		final JPanel jp = new JPanel();
-//		JPanel bottomPanel = new JPanel();
-//		JTextField[] nbSourisByGate;
 
 		setLayout(bl);
 		jp.setLayout(gbl);
@@ -65,7 +59,7 @@ public class GUI extends JFrame implements ActionListener {
 		        
 		        // affichage
 		        fileChooser.showOpenDialog(null);
-		         
+				
 		        // récupération du fichier sélectionné
 		        file = fileChooser.getSelectedFile();
 		        System.out.println("Fichier choisi : " + fileChooser.getSelectedFile());
@@ -74,35 +68,29 @@ public class GUI extends JFrame implements ActionListener {
 					GraphMaker gm;
 					try {
 						gm = new GraphMaker(file);
-						if( gm.isWellFormed() ) {
-							Map<String, GenericNode<String, Object>> nodes = gm.getNodes();
-							int lengthMax = gm.getLength();
-							int iMax = gm.getLineLength();
+						if( drawField(gm) ) {
 							
-							
-							for(int j = 0 ; j < lengthMax / iMax ; j++) {
-								for(int i = 0; i < iMax; i++) {
-									Coordonne co = new Coordonne(i, j);
-									gbc.gridy = j;
-									gbc.gridx = i;
-									gbc.gridheight = 1;
-									gbc.gridwidth = 1;
-									String img = "wall.png";
-									GenericNode<String, Object> node = nodes.get(co.toString());
-									if ( node != null ) {
-										img = node.getType() + ".png";
-									}
-									BufferedImage myPicture = ImageIO.read(new File("images/" + img));
-									JLabel picLabel = new JLabel(new ImageIcon(myPicture));
-									jp.add(picLabel, gbc);
-									jp.repaint();
-									revalidate();
-								}
+							for ( int i = 0; i < gm.getGraph().getDepart().size(); i++ ) {
+								JLabel nbMousesByGateLabel = new JLabel( "Porte" + (i + 1) );
+								bottomPanel.add(nbMousesByGateLabel);
+								JTextField nbMousesByGate = new JTextField( "Porte" + (i + 1) );
+								bottomPanel.add(nbMousesByGate);
 							}
+							JButton lancer = new JButton("Lachez les souris !!");
 							
-//							for(int i = 0; i < graph.getDepart().size() ; i++) {
-//								
-//							}
+							lancer.addActionListener(new ActionListener() {
+
+								@Override
+								public void actionPerformed(ActionEvent arg0) {
+									// TODO Auto-generated method stub
+									
+								}
+								
+							});
+							
+							bottomPanel.add(lancer);
+							bottomPanel.repaint();
+							revalidate();
 						} else {
 							jp.add(new Label("The file isn't good ! "));
 							jp.repaint();
@@ -116,15 +104,47 @@ public class GUI extends JFrame implements ActionListener {
 		});
 		JPanel north = new JPanel();
 		north.setLayout(bl2);
-		north.add(getFile, BorderLayout.CENTER);
-		add( north, BorderLayout.NORTH  );
-		add( jp,      BorderLayout.CENTER );
+		north.add( getFile, 	BorderLayout.CENTER );
+		add( 	   bottomPanel, BorderLayout.SOUTH  );
+		
+		add(	   north, 		BorderLayout.NORTH  );
+		add( 	   jp,      	BorderLayout.CENTER );
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		pack();
 		setVisible(true);
 	}
 
+	boolean drawField(GraphMaker gm) throws IOException {
+		if ( !gm.isWellFormed() )
+			return false;
+		Map<String, GenericNode<String, Object>> nodes = gm.getNodes();
+		int lengthMax = gm.getLength();
+		int iMax = gm.getLineLength();
+		
+		
+		for(int j = 0 ; j < lengthMax / iMax ; j++) {
+			for(int i = 0; i < iMax; i++) {
+				Coordonne co = new Coordonne(i, j);
+				gbc.gridy = j;
+				gbc.gridx = i;
+				gbc.gridheight = 1;
+				gbc.gridwidth = 1;
+				String img = "wall.png";
+				GenericNode<String, Object> node = nodes.get(co.toString());
+				if ( node != null ) {
+					img = node.getType() + ".png";
+				}
+				BufferedImage myPicture = ImageIO.read(new File("images/" + img));
+				JLabel picLabel = new JLabel(new ImageIcon(myPicture));
+				jp.add(picLabel, gbc);
+				jp.repaint();
+				revalidate();
+			}
+		}
+		return true;
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		
@@ -135,5 +155,13 @@ public class GUI extends JFrame implements ActionListener {
 	private int width;
 	private Dimension dimension;
 	private File file;
+	
+
+	JPanel jp 		 	   = new JPanel();
+	JPanel bottomPanel 	   = new JPanel();
+	BorderLayout bl 	   = new BorderLayout();
+	BorderLayout bl2 	   = new BorderLayout();
+	GridBagLayout gbl	   = new GridBagLayout();
+	GridBagConstraints gbc = new GridBagConstraints();
 	
 }
