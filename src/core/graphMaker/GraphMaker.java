@@ -81,7 +81,7 @@ public class GraphMaker {
 									System.out.println("default case");
 									return;
 						}
-						GenericNode<String, Object> n = new GenericNode<String, Object>(el + "");
+						GenericNode<String, Object> n = new GenericNode<String, Object>(coordonne.toString());
 
 						if (c == ARRIVAL) {
 							graph.addArrival(n);
@@ -131,14 +131,14 @@ public class GraphMaker {
 			reader.close();
 			ipsr.close();
 			ips.close();
-			initDoors(getGraph(), this);
+			initGates(getGraph(), this);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	public void initDoors(IGraph<String, Object> graph, GraphMaker gm) {
+	public void initGates(IGraph<String, Object> graph, GraphMaker gm) {
 		for ( int i = 0; i < doors.size(); i++ ) {
 			List<INode<String,Object>> allAround = getNodeAround(doors.get(i));
 			gm.getGraph().addDepart(new Gate<String, Object>(allAround, graph));
