@@ -55,29 +55,38 @@ public class GraphMaker {
 						int cost = 0;
 						char el = 0;
 						String type = "";
-						if (c == FREE_SPACE) {
-							cost = 1;
-							el = FREE_SPACE;
-							type = "free";
-						}
-						if (c == BUSH) {
-							cost = 2;
-							el = BUSH;
-							type = "bush";
-						}
-						if (c == ARRIVAL) {
-							cost = 1;
-							el = ARRIVAL;
-							type = "arrival";
-						}
-						if (c == DEPART) {
-							cost = 1;
-							el = DEPART;
-							type = "depart";
-							doors.add(coordonne);
+						switch (c) {
+								case BUSH :
+									cost = 2;
+									el = BUSH;
+									type = "bush";
+									break;
+								case FREE_SPACE :
+									cost = 1;
+									el = FREE_SPACE;
+									type = "free";
+									break;
+								case ARRIVAL :
+									cost = 1;
+									el = ARRIVAL;
+									type = "arrival";
+									break;
+								case DEPART :
+									cost = 1;
+									el = DEPART;
+									type = "depart";
+									doors.add(coordonne);
+									break;
+								default:
+									System.out.println("default case");
+									return;
 						}
 						GenericNode<String, Object> n = new GenericNode<String, Object>(el + "");
 
+						if (c == ARRIVAL) {
+							graph.addArrival(n);
+						}
+						
 						n.setType(type);
 						n.coordonne.setCoordonne(coordonne);
 						nodes.put(ref.toString(), n);
@@ -202,7 +211,7 @@ public class GraphMaker {
 	
 	private int fileLength;
 	private int lineLength;
-	private IGraph<String, Object> graph;
+	private Graph<String, Object> graph;
 	private Map<String, GenericNode<String, Object>> nodes = new HashMap<String, GenericNode<String, Object>>();
 	private boolean wellFormed = true;
 	private List<Coordonne> doors = new ArrayList<>();
