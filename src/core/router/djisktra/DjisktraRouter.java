@@ -1,15 +1,12 @@
 package core.router.djisktra;
 
-import java.util.AbstractMap;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import core.dataStructure.graph.Graph;
-import core.dataStructure.graph.interfaces.IEdge;
 import core.dataStructure.graph.interfaces.INode;
 import core.dataStructure.queue.priority.LinkedPriorityQueue;
 import core.dataStructure.stack.exceptions.StackEmptyException;
@@ -128,7 +125,7 @@ public class DjisktraRouter<K,V> implements IRouter<K,V>{
 			}
 			
 			Path newPath;
-			Set<Entry<INode<K,V>,Integer>> Neighbours = getNeighBours(node);
+			Set<Entry<INode<K,V>,Integer>> Neighbours = node.getNeighBours();
 			
 			for(Entry<INode<K,V>,Integer> neighboor : Neighbours) {
 				if(!path.contains(neighboor.getKey()) && !markedNodes.contains(neighboor.getKey()) 
@@ -139,16 +136,6 @@ public class DjisktraRouter<K,V> implements IRouter<K,V>{
 				}
 			}
 			forbiddenNextSteps = null;
-		}
-
-		@SuppressWarnings("unchecked")
-		private Set<Entry<INode<K,V>,Integer>> getNeighBours(INode<K, V> node) {
-			Set<Entry<INode<K,V>,Integer>> Neighbours = new HashSet<Entry<INode<K,V>,Integer>>();
-			List<IEdge> edges = node.getEdges();
-			for(IEdge edj : edges) {
-				Neighbours.add(new AbstractMap.SimpleEntry<INode<K,V>,Integer>((INode<K,V>)edj.getOther(node),  (Integer) edj.getAttribute("cost")));
-			}
-			return Neighbours;
 		}
 	}
 }

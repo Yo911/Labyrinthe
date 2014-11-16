@@ -1,7 +1,11 @@
 package core.dataStructure.graph;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import core.dataStructure.graph.interfaces.IEdge;
 import core.dataStructure.graph.interfaces.INode;
@@ -45,6 +49,16 @@ public class GenericNode<K,V> implements INode<K,V> {
 
 	public void setUsed(boolean used) {
 		this.used = used;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Set<Entry<INode<K,V>,Integer>> getNeighBours() {
+		Set<Entry<INode<K,V>,Integer>> Neighbours = new HashSet<Entry<INode<K,V>,Integer>>();
+		List<IEdge> edges = getEdges();
+		for(IEdge edj : edges) {
+			Neighbours.add(new AbstractMap.SimpleEntry<INode<K,V>,Integer>((INode<K,V>)edj.getOther(this),  (Integer) edj.getAttribute("cost")));
+		}
+		return Neighbours;
 	}
 
 	public Coordonne coordonne;
