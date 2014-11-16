@@ -1,5 +1,7 @@
 package core.dataStructure.roundRobin;
 
+import java.util.Set;
+
 import core.dataStructure.linkedList.simple.OptimizedLinkSimple;
 import core.dataStructure.roundRobin.exceptions.RoundRobinEmptyException;
 
@@ -17,4 +19,5 @@ public interface IRoundRobin<T> {
 	public boolean isEmpty();
 	public boolean equals(OptimizedLinkSimple<T> l) throws RoundRobinEmptyException;
 	public boolean isEquals(T t) throws RoundRobinEmptyException;
+	public void add(Set<T> newObject);
 }

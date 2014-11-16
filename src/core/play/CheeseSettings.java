@@ -22,4 +22,8 @@ public class CheeseSettings {
 		return comparator;
 	}
 
+	public static int getMouseNumberForGate(int j) {
+		return 16;
+	}
+
 }

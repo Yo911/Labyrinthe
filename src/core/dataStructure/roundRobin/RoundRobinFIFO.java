@@ -1,5 +1,7 @@
 package core.dataStructure.roundRobin;
 
+import java.util.Set;
+
 import core.dataStructure.linkedList.simple.OptimizedLinkSimple;
 import core.dataStructure.roundRobin.exceptions.RoundRobinEmptyException;
 import core.dataStructure.roundRobin.exceptions.RoundRobinIllegalAccessException;
@@ -14,7 +16,16 @@ public class RoundRobinFIFO<T> implements IRoundRobin<T> {
 	private boolean hasRemoved;
 	private boolean hasBegun;
 	
+	@Override
+	public void add(Set<T> newObjects) {
+		for(T t : newObjects) {
+			add(t);
+		}
+	}
+	
 	public void add(T value) {
+		
+		if(value == null) return; 
 		
 		OptimizedLinkSimple<T> newLink = new OptimizedLinkSimple<T>();
 		newLink.setValue(value);
