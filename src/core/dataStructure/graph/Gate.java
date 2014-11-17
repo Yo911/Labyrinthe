@@ -16,8 +16,8 @@ public class Gate<K,V> {
 	private IGraph<K,V> graph;
 	
 	public Gate(Collection<INode<K,V>> departures, IGraph<K,V> graph) {
-		departures = new HashSet<>();
-		departures.addAll(departures);
+		this.departures = new HashSet<>();
+		this.departures.addAll(departures);
 		this.mouseNumber = 0;
 		this.graph = graph;
 	}

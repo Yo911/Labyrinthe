@@ -16,4 +16,5 @@ public class MoveEvent extends Event {
 	public MoveEventData getData() {
 		return this.data;
 	}
+	
 }
