@@ -53,27 +53,22 @@ public class GraphMaker {
 					ref.setCoordinates(j, i);
 					if( c != WALL ) {
 						int cost = 0;
-						char el = 0;
 						String type = "";
 						switch (c) {
 								case BUSH :
 									cost = 2;
-									el = BUSH;
 									type = "bush";
 									break;
 								case FREE_SPACE :
 									cost = 1;
-									el = FREE_SPACE;
 									type = "free";
 									break;
 								case ARRIVAL :
 									cost = 1;
-									el = ARRIVAL;
 									type = "arrival";
 									break;
 								case DEPART :
 									cost = 1;
-									el = DEPART;
 									type = "depart";
 									doors.add(coordinates);
 									break;

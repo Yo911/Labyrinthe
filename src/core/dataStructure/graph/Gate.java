@@ -35,7 +35,7 @@ public class Gate<K,V> {
 				if(newMouses == null) {
 					newMouses = new HashSet<>();
 				}
-				newMouses.add(new Mouse<K,V>(departure,graph,0));
+				newMouses.add(new Mouse<K,V>(departure,graph,1));
 			}
 		}
 		return newMouses;

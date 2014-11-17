@@ -18,6 +18,9 @@ public class RoundRobinFIFO<T> implements IRoundRobin<T> {
 	
 	@Override
 	public void add(Set<T> newObjects) {
+		
+		if(newObjects == null) return;
+		
 		for(T t : newObjects) {
 			add(t);
 		}

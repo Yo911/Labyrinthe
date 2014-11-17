@@ -23,7 +23,7 @@ public class CheeseSettings {
 	}
 
 	public static int getMouseNumberForGate(int j) {
-		return 16;
+		return 3;
 	}
 
 }

@@ -1,8 +1,8 @@
 package core.play;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
+//import java.io.File;
+//import java.io.IOException;
+//import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -16,7 +16,7 @@ import core.dataStructure.graph.interfaces.INode;
 import core.dataStructure.roundRobin.IRoundRobin;
 import core.dataStructure.roundRobin.RoundRobinFIFO;
 import core.dataStructure.roundRobin.exceptions.RoundRobinEmptyException;
-import core.graphMaker.GraphMaker;
+//import core.graphMaker.GraphMaker;
 
 public class CheeseMain {
 
@@ -48,15 +48,15 @@ public class CheeseMain {
 		graph.registerNode(marseille);
 		
 		// Build edges
-		new GenericEdge(paris, lyon, 0);
-		new GenericEdge(paris, grenoble, 0);
-		new GenericEdge(lyon, grenoble, 0);
-		new GenericEdge(lyon, valence, 0);
-		new GenericEdge(lyon, gap, 0);
-		new GenericEdge(grenoble, valence, 0);
-		new GenericEdge(grenoble, gap, 0);
-		new GenericEdge(gap, marseille, 0);
-		new GenericEdge(valence, marseille, 0);
+		new GenericEdge(paris, lyon, 1);
+		new GenericEdge(paris, grenoble, 1);
+		new GenericEdge(lyon, grenoble, 1);
+		new GenericEdge(lyon, valence, 1);
+		new GenericEdge(lyon, gap, 1);
+		new GenericEdge(grenoble, valence, 1);
+		new GenericEdge(grenoble, gap, 1);
+		new GenericEdge(gap, marseille, 1);
+		new GenericEdge(valence, marseille, 1);
 		
 		Set<INode<String,Object>> s1 = new HashSet<>();
 		Set<INode<String,Object>> s2 = new HashSet<>();
@@ -80,7 +80,6 @@ public class CheeseMain {
 		}
 
 		int i = 0;
-
 		IMouse<String,Object> m = null;
 		try {
 			do {
@@ -90,12 +89,15 @@ public class CheeseMain {
 				}
 				
 				if(rr.size() != 0) {
-					if(i%rr.size() == 0)
-						System.out.println("-----");
+					
+//					System.out.println("size = " + rr.size());
+					
+//					if(i%rr.size() == 0)
+//						System.out.println("-----");
 					
 					i++;
 					m = rr.next();
-					if(m.doSomething() == true) {
+					if(rr.next().doSomething() == true) {
 						System.out.println("Mouse " + m.hashCode() + " location: " + m.getLocation());
 						rr.remove();
 					}

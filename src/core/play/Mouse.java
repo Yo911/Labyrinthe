@@ -110,7 +110,7 @@ public class Mouse<K,V> implements IMouse<K,V> {
 		
 		Set<INode<K,V>> forbiddenNextSteps = getForbiddenNextSteps();
 		
-		if(counter != 0 || canMove == false) {
+		if(counter > 1 || canMove == false) {
 			stay();
 			return false;
 		}
