@@ -22,7 +22,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import core.dataStructure.graph.Coordonne;
+import core.dataStructure.graph.Coordinates;
 import core.dataStructure.graph.GenericNode;
 import core.graphMaker.GraphMaker;
 
@@ -54,13 +54,13 @@ public class GUI extends JFrame implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				
-				// création de la boîte de dialogue
+				// crï¿½ation de la boï¿½te de dialogue
 		        JFileChooser fileChooser = new JFileChooser();
 		        
 		        // affichage
 		        fileChooser.showOpenDialog(null);
 				
-		        // récupération du fichier sélectionné
+		        // rï¿½cupï¿½ration du fichier sï¿½lectionnï¿½
 		        file = fileChooser.getSelectedFile();
 		        System.out.println("Fichier choisi : " + fileChooser.getSelectedFile());
 				if(file != null) {
@@ -105,7 +105,7 @@ public class GUI extends JFrame implements ActionListener {
 		
 		for(int j = 0 ; j < lengthMax / iMax ; j++) {
 			for(int i = 0; i < iMax; i++) {
-				Coordonne co = new Coordonne(i, j);
+				Coordinates co = new Coordinates(i, j);
 				gbc.gridy = j;
 				gbc.gridx = i;
 				gbc.gridheight = 1;

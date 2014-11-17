@@ -1,38 +1,38 @@
 package core.dataStructure.graph;
 
-import core.dataStructure.graph.interfaces.ICoordonne;
+import core.dataStructure.graph.interfaces.ICoordinates;
 
-public class Coordonne implements ICoordonne {
+public class Coordinates implements ICoordinates {
 	
-	public Coordonne() {
+	public Coordinates() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public Coordonne(int x, int y) {
-		// TODO Auto-generated constructor stub
-		this.x = x;
-		this.y = y;
-	}
-	
-	public Coordonne(Coordonne c) {
-		// TODO Auto-generated constructor stub
-		this.x = c.getX();
-		this.y = c.getY();
-	}
-	
-	public void setCoordonne(int x, int y) {
+	public Coordinates(int x, int y) {
 		// TODO Auto-generated constructor stub
 		this.x = x;
 		this.y = y;
 	}
 	
-	public void setCoordonne(Coordonne c) {
+	public Coordinates(Coordinates c) {
 		// TODO Auto-generated constructor stub
 		this.x = c.getX();
 		this.y = c.getY();
 	}
 	
-	public boolean equals(Coordonne c) {
+	public void setCoordinates(int x, int y) {
+		// TODO Auto-generated constructor stub
+		this.x = x;
+		this.y = y;
+	}
+	
+	public void setCoordinates(Coordinates c) {
+		// TODO Auto-generated constructor stub
+		this.x = c.getX();
+		this.y = c.getY();
+	}
+	
+	public boolean equals(Coordinates c) {
 		return (c.getX() == x && c.getY() == y);
 	}
 	

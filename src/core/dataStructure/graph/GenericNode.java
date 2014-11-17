@@ -16,7 +16,7 @@ public class GenericNode<K,V> implements INode<K,V> {
 	public GenericNode(K key) {
 		this.key = key;
 		listEdge = new ArrayList<IEdge>();
-		coordonne = new Coordonne();
+		coordinates = new Coordinates();
 	}
 
 	public List<IEdge> getEdges() {
@@ -51,6 +51,14 @@ public class GenericNode<K,V> implements INode<K,V> {
 		this.used = used;
 	}
 	
+	public void setCoordinates(Coordinates coordinates) {
+		this.coordinates = coordinates;
+	}
+	
+	public Coordinates getCoordinates() {
+		return this.coordinates;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public Set<Entry<INode<K,V>,Integer>> getNeighBours() {
 		Set<Entry<INode<K,V>,Integer>> Neighbours = new HashSet<>();
@@ -61,7 +69,7 @@ public class GenericNode<K,V> implements INode<K,V> {
 		return Neighbours;
 	}
 
-	public Coordonne coordonne;
+	private Coordinates coordinates;
 
 	private K key = null;
 	private V value = null;

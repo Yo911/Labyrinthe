@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import core.dataStructure.graph.Coordonne;
+import core.dataStructure.graph.Coordinates;
 import core.dataStructure.graph.Gate;
 import core.dataStructure.graph.GenericEdge;
 import core.dataStructure.graph.GenericNode;
@@ -36,8 +36,8 @@ public class GraphMaker {
 			String text = "";
 			char c = 0;
 			int i = 0, k = 0;
-			Coordonne coordonne = new Coordonne();
-			Coordonne ref       = new Coordonne();
+			Coordinates coordinates = new Coordinates();
+			Coordinates ref       = new Coordinates();
 			while ((line = reader.readLine()) != null) {
 				if ( line.equals("\n") )
 						continue;
@@ -49,8 +49,8 @@ public class GraphMaker {
 					wellFormed = goodElement(c);
 					if( !wellFormed )
 						return;
-					coordonne.setCoordonne(j, i);
-					ref.setCoordonne(j, i);
+					coordinates.setCoordinates(j, i);
+					ref.setCoordinates(j, i);
 					if( c != WALL ) {
 						int cost = 0;
 						char el = 0;
@@ -75,50 +75,50 @@ public class GraphMaker {
 									cost = 1;
 									el = DEPART;
 									type = "depart";
-									doors.add(coordonne);
+									doors.add(coordinates);
 									break;
 								default:
 									System.out.println("default case");
 									return;
 						}
-						GenericNode<String, Object> n = new GenericNode<String, Object>(coordonne.toString());
+						GenericNode<String, Object> n = new GenericNode<String, Object>(coordinates.toString());
 
 						if (c == ARRIVAL) {
 							graph.addArrival(n);
 						}
 						
 						n.setType(type);
-						n.coordonne.setCoordonne(coordonne);
+						n.getCoordinates().setCoordinates(coordinates);
 						nodes.put(ref.toString(), n);
 						graph.registerNode(n);
 						if (i != 0 && c != WALL) {
 							// GAUCHE
 							if (line.charAt(j - 1) != WALL && line.charAt(j - 1) != DEPART) {
-								ref.setCoordonne(coordonne);
-								ref.setX(coordonne.getX() - 1);
+								ref.setCoordinates(coordinates);
+								ref.setX(coordinates.getX() - 1);
 								new GenericEdge(n, nodes.get(ref.toString()), (line.charAt(j - 1) != BUSH) ? cost : 2);
 							}
 	
 							// HAUT
 							if (text.charAt(k - line.length()) != WALL && text.charAt(k - line.length()) != DEPART) {
-								ref.setCoordonne(coordonne);
-								ref.setY(coordonne.getY() - 1);
+								ref.setCoordinates(coordinates);
+								ref.setY(coordinates.getY() - 1);
 								new GenericEdge(n, nodes.get(ref.toString()), (text.charAt(k - line.length()) != BUSH) ? cost : 2);
 							}
 
 							// HAUT - GAUCHE
 							if (text.charAt(k - line.length()) != WALL && line.charAt(j - 1) != WALL && text.charAt(k - line.length() - 1) != WALL && text.charAt(k - line.length() - 1) != DEPART) {
-								ref.setCoordonne(coordonne);
-								ref.setX(coordonne.getX() - 1);
-								ref.setY(coordonne.getY() - 1);
+								ref.setCoordinates(coordinates);
+								ref.setX(coordinates.getX() - 1);
+								ref.setY(coordinates.getY() - 1);
 								new GenericEdge(n, nodes.get(ref.toString()), (text.charAt(k - line.length() - 1) != BUSH) ? cost : 2);
 							}
 
 							// HAUT - DROITE
 							if (text.charAt(k - line.length()) != WALL && line.charAt(j + 1) != WALL && text.charAt(k - line.length() + 1) != WALL && text.charAt(k - line.length() + 1) != DEPART) {
-								ref.setCoordonne(coordonne);
-								ref.setX(coordonne.getX() + 1);
-								ref.setY(coordonne.getY() - 1);
+								ref.setCoordinates(coordinates);
+								ref.setX(coordinates.getX() + 1);
+								ref.setY(coordinates.getY() - 1);
 								new GenericEdge(n, nodes.get(ref.toString()), (text.charAt(k - line.length() + 1) != BUSH) ? cost : 2);
 							}
 						}
@@ -145,9 +145,9 @@ public class GraphMaker {
 		}
 	}
 	
-	private List<INode<String,Object>> getNodeAround(Coordonne c) {
+	private List<INode<String,Object>> getNodeAround(Coordinates c) {
 		List<INode<String,Object>> around = new ArrayList<>();
-		Coordonne co = new Coordonne(c);
+		Coordinates co = new Coordinates(c);
 		
 		// HAUT, BAS, GAUCHE, DROITE
 		co.setX(c.getX() - 1);
@@ -179,7 +179,7 @@ public class GraphMaker {
 		return around;
 	}
 	
-	private boolean canAddInNodes(Coordonne c) {
+	private boolean canAddInNodes(Coordinates c) {
 		if( nodes.get(c.toString()).getValue() != WALL + "" && nodes.get(c.toString()).getValue() != DEPART + "" )
 			return true;
 		return false;
@@ -214,7 +214,7 @@ public class GraphMaker {
 	private Graph<String, Object> graph;
 	private Map<String, GenericNode<String, Object>> nodes = new HashMap<String, GenericNode<String, Object>>();
 	private boolean wellFormed = true;
-	private List<Coordonne> doors = new ArrayList<>();
+	private List<Coordinates> doors = new ArrayList<>();
 	
 	public static final char FREE_SPACE = ' ';
 	public static final char BUSH       = 'G';
