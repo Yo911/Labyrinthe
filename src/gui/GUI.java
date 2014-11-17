@@ -54,13 +54,13 @@ public class GUI extends JFrame implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				
-				// cr�ation de la bo�te de dialogue
+				// création de la boîte de dialogue
 		        JFileChooser fileChooser = new JFileChooser();
 		        
 		        // affichage
 		        fileChooser.showOpenDialog(null);
 				
-		        // r�cup�ration du fichier s�lectionn�
+		        // récupération du fichier sélectionné
 		        file = fileChooser.getSelectedFile();
 		        System.out.println("Fichier choisi : " + fileChooser.getSelectedFile());
 				if(file != null) {
