@@ -13,6 +13,6 @@ public interface IGraph<K,V> {
 	public boolean contains(INode<K, V> node);
 	public void addArrival(INode<K, V> arrival);
 	public void addDepart(Gate<K, V> depart);
-	public List<Gate<K, V>> getDepart();
+	public List<Gate<K, V>> getDepartures();
 	public List<INode<K, V>> getArrival();
 }

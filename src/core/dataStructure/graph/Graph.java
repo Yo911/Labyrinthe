@@ -62,7 +62,7 @@ public class Graph<K,V> implements IGraph<K,V> {
 		return false;
 	}
 
-	public List<Gate<K, V>> getDepart() {
+	public List<Gate<K, V>> getDepartures() {
 		return depart;
 	}
 

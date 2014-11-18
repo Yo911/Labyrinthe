@@ -73,7 +73,7 @@ public class CheeseMain {
 
 		IRoundRobin<IMouse<String,Object>> rr = new RoundRobinFIFO<>();
 		
-		List<Gate<String, Object>> departures = graph.getDepart();
+		List<Gate<String, Object>> departures = graph.getDepartures();
 		
 		for(int j = 0; j < departures.size(); j++) {
 			departures.get(j).setMouseNumber(CheeseSettings.getMouseNumberForGate(j));

@@ -23,6 +23,7 @@ import javax.swing.JTextField;
 
 import core.dataStructure.graph.Coordinates;
 import core.dataStructure.graph.GenericNode;
+import core.dataStructure.graph.interfaces.IGraph;
 import core.dataStructure.graph.interfaces.INode;
 import core.graphMaker.GraphMaker;
 import core.play.MoveEventData;
@@ -63,10 +64,7 @@ public class GUI extends JFrame implements ActionListener {
 				
 		        // récupération du fichier sélectionné
 		        file = fileChooser.getSelectedFile();
-		        System.out.println("Fichier choisi : " + fileChooser.getSelectedFile());
 				if(file != null) {
-					System.out.println("graph made in yehouda :D");
-					
 					jp.removeAll();
 					try {
 						gm = new GraphMaker(file);
@@ -104,31 +102,18 @@ public class GUI extends JFrame implements ActionListener {
 		int lengthMax = gm.getLength();
 		int iMax = gm.getLineLength();
 		
-		
 		for(int j = 0 ; j < lengthMax / iMax ; j++) {
 			for(int i = 0; i < iMax; i++) {
 				Coordinates co = new Coordinates(i, j);
-				gbc.gridy = j;
-				gbc.gridx = i;
-				gbc.gridheight = 1;
-				gbc.gridwidth = 1;
-				String img = "wall.png";
 				GenericNode<String, Object> node = nodes.get(co.toString());
-				if ( node != null ) {
-					img = node.getType() + ".png";
-				}
-				BufferedImage myPicture = ImageIO.read(new File("images/" + img));
-				JLabel picLabel = new JLabel(new ImageIcon(myPicture));
-				jp.add(picLabel, gbc);
-				jp.repaint();
-				revalidate();
+				refreshNode(node);
 			}
 		}
 		return true;
 	}
 	
 	private void getDetails() {
-		for ( int i = 0; i < gm.getGraph().getDepart().size(); i++ ) {
+		for ( int i = 0; i < gm.getGraph().getDepartures().size(); i++ ) {
 			JLabel nbMousesByGateLabel = new JLabel( "Porte" + (i + 1) );
 			bottomPanel.add(nbMousesByGateLabel);
 			JTextField nbMousesByGate = new JTextField( "Porte" + (i + 1) );
@@ -177,6 +162,8 @@ public class GUI extends JFrame implements ActionListener {
 			BufferedImage myPicture = ImageIO.read(new File("images/" + img + ".png"));
 			JLabel picLabel = new JLabel(new ImageIcon(myPicture));
 			jp.add(picLabel, gbc);
+			jp.repaint();
+			revalidate();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -194,6 +181,10 @@ public class GUI extends JFrame implements ActionListener {
 		return gui;
 	}
 
+	public IGraph<String, Object> getGraph() {
+		return gm.getGraph();
+	}
+	
 	// composant graphique
 	private int height;
 	private int width;
