@@ -8,7 +8,7 @@ public class MainGUI {
 		//new MyUI();
 		Runnable r = new Runnable(){
 			public void run(){
-				new GUI();
+				GUI.getGUI();
 			}
 		};
 		SwingUtilities.invokeLater(r);

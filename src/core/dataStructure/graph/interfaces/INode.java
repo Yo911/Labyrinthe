@@ -15,5 +15,7 @@ public interface INode<K, V> extends IElement{
 	public void setCoordinates(Coordinates coordinates);
 	public Coordinates getCoordinates();
 	public Set<Entry<INode<K,V>, Integer>> getNeighBours();
+	public void setType(String type);
+	public String getType();
 }
 

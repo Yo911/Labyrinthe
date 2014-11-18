@@ -23,13 +23,15 @@ import javax.swing.JTextField;
 
 import core.dataStructure.graph.Coordinates;
 import core.dataStructure.graph.GenericNode;
+import core.dataStructure.graph.interfaces.INode;
 import core.graphMaker.GraphMaker;
+import core.play.MoveEventData;
 
 public class GUI extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 	
-	public GUI() {
+	private GUI() {
 		Listen l = new Listen();
 		addWindowListener(l);
 		dimension = Toolkit.getDefaultToolkit().getScreenSize();
@@ -63,27 +65,14 @@ public class GUI extends JFrame implements ActionListener {
 		        file = fileChooser.getSelectedFile();
 		        System.out.println("Fichier choisi : " + fileChooser.getSelectedFile());
 				if(file != null) {
-					
-
-//					GraphMaker gm = null;
-//					try {
-//						gm = new GraphMaker(file);
-//					} catch (IOException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//			//
-//					IGraph<String, Object> graph = gm.getGraph();
 					System.out.println("graph made in yehouda :D");
-					//return;
 					
 					jp.removeAll();
-					GraphMaker gm;
 					try {
 						gm = new GraphMaker(file);
-						if( drawField(gm) ) {
+						if( drawField() ) {
 							
-							getDetails(gm);
+							getDetails();
 						} else {
 							jp.add(new JLabel("The file isn't good ! "));
 							jp.repaint();
@@ -108,7 +97,7 @@ public class GUI extends JFrame implements ActionListener {
 		setVisible(true);
 	}
 
-	boolean drawField(GraphMaker gm) throws IOException {
+	boolean drawField() throws IOException {
 		if ( !gm.isWellFormed() )
 			return false;
 		Map<String, GenericNode<String, Object>> nodes = gm.getNodes();
@@ -138,7 +127,7 @@ public class GUI extends JFrame implements ActionListener {
 		return true;
 	}
 	
-	private void getDetails(GraphMaker gm) {
+	private void getDetails() {
 		for ( int i = 0; i < gm.getGraph().getDepart().size(); i++ ) {
 			JLabel nbMousesByGateLabel = new JLabel( "Porte" + (i + 1) );
 			bottomPanel.add(nbMousesByGateLabel);
@@ -162,9 +151,39 @@ public class GUI extends JFrame implements ActionListener {
 		revalidate();
 	}
 	
+	public void refresh(MoveEventData med) {
+		INode<?,?> node = med.getNodeLeaved();
+	}
+	
+	public void refreshNode(INode<?, ?> node) throws IOException {
+		Coordinates coo = node.getCoordinates();
+		gbc.gridx = coo.getX();
+		gbc.gridy = coo.getY();
+		gbc.gridheight = 1;
+		gbc.gridwidth = 1;
+		
+		String img = "wall";
+		if( node.isUsed() ) {
+			img = "mouse";
+		} else {
+			if ( node != null ) {
+				img = node.getType() + ".png";
+			}
+		}
+		BufferedImage myPicture = ImageIO.read(new File("images/" + img + ".png"));
+		JLabel picLabel = new JLabel(new ImageIcon(myPicture));
+		jp.add(picLabel, gbc);
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		
+	}
+	
+	public static GUI getGUI() {
+		if (gui == null)
+			gui = new GUI();
+		return gui;
 	}
 
 	// composant graphique
@@ -172,6 +191,8 @@ public class GUI extends JFrame implements ActionListener {
 	private int width;
 	private Dimension dimension;
 	private File file;
+	private GraphMaker gm;
+	private static GUI gui;
 	
 
 	JPanel jp 		 	   = new JPanel();
