@@ -51,23 +51,23 @@ public class GraphMaker {
 						return;
 					coordinates.setCoordinates(j, i);
 					ref.setCoordinates(j, i);
-					if( c != WALL ) {
+					if( c != CHAR_WALL ) {
 						int cost = 0;
 						String type = "";
 						switch (c) {
-								case BUSH :
+								case CHAR_BUSH :
 									cost = 2;
 									type = "bush";
 									break;
-								case FREE_SPACE :
+								case CHAR_FREE_SPACE :
 									cost = 1;
 									type = "free";
 									break;
-								case ARRIVAL :
+								case CHAR_ARRIVAL :
 									cost = 1;
 									type = "arrival";
 									break;
-								case DEPART :
+								case CHAR_DEPART :
 									cost = 1;
 									type = "depart";
 									doors.add(coordinates);
@@ -78,7 +78,7 @@ public class GraphMaker {
 						}
 						GenericNode<String, Object> n = new GenericNode<String, Object>(coordinates.toString());
 
-						if (c == ARRIVAL) {
+						if (c == CHAR_ARRIVAL) {
 							graph.addArrival(n);
 						}
 						
@@ -86,35 +86,35 @@ public class GraphMaker {
 						n.getCoordinates().setCoordinates(coordinates);
 						nodes.put(ref.toString(), n);
 						graph.registerNode(n);
-						if (i != 0 && c != WALL) {
+						if (i != 0 && c != CHAR_WALL) {
 							// GAUCHE
-							if (line.charAt(j - 1) != WALL && line.charAt(j - 1) != DEPART) {
+							if (line.charAt(j - 1) != CHAR_WALL && line.charAt(j - 1) != CHAR_DEPART) {
 								ref.setCoordinates(coordinates);
 								ref.setX(coordinates.getX() - 1);
-								new GenericEdge(n, nodes.get(ref.toString()), (line.charAt(j - 1) != BUSH) ? cost : 2);
+								new GenericEdge(n, nodes.get(ref.toString()), (line.charAt(j - 1) != CHAR_BUSH) ? cost : 2);
 							}
 	
 							// HAUT
-							if (text.charAt(k - line.length()) != WALL && text.charAt(k - line.length()) != DEPART) {
+							if (text.charAt(k - line.length()) != CHAR_WALL && text.charAt(k - line.length()) != CHAR_DEPART) {
 								ref.setCoordinates(coordinates);
 								ref.setY(coordinates.getY() - 1);
-								new GenericEdge(n, nodes.get(ref.toString()), (text.charAt(k - line.length()) != BUSH) ? cost : 2);
+								new GenericEdge(n, nodes.get(ref.toString()), (text.charAt(k - line.length()) != CHAR_BUSH) ? cost : 2);
 							}
 
 							// HAUT - GAUCHE
-							if (text.charAt(k - line.length()) != WALL && line.charAt(j - 1) != WALL && text.charAt(k - line.length() - 1) != WALL && text.charAt(k - line.length() - 1) != DEPART) {
+							if (text.charAt(k - line.length()) != CHAR_WALL && line.charAt(j - 1) != CHAR_WALL && text.charAt(k - line.length() - 1) != CHAR_WALL && text.charAt(k - line.length() - 1) != CHAR_DEPART) {
 								ref.setCoordinates(coordinates);
 								ref.setX(coordinates.getX() - 1);
 								ref.setY(coordinates.getY() - 1);
-								new GenericEdge(n, nodes.get(ref.toString()), (text.charAt(k - line.length() - 1) != BUSH) ? cost : 2);
+								new GenericEdge(n, nodes.get(ref.toString()), (text.charAt(k - line.length() - 1) != CHAR_BUSH) ? cost : 2);
 							}
 
 							// HAUT - DROITE
-							if (text.charAt(k - line.length()) != WALL && line.charAt(j + 1) != WALL && text.charAt(k - line.length() + 1) != WALL && text.charAt(k - line.length() + 1) != DEPART) {
+							if (text.charAt(k - line.length()) != CHAR_WALL && line.charAt(j + 1) != CHAR_WALL && text.charAt(k - line.length() + 1) != CHAR_WALL && text.charAt(k - line.length() + 1) != CHAR_DEPART) {
 								ref.setCoordinates(coordinates);
 								ref.setX(coordinates.getX() + 1);
 								ref.setY(coordinates.getY() - 1);
-								new GenericEdge(n, nodes.get(ref.toString()), (text.charAt(k - line.length() + 1) != BUSH) ? cost : 2);
+								new GenericEdge(n, nodes.get(ref.toString()), (text.charAt(k - line.length() + 1) != CHAR_BUSH) ? cost : 2);
 							}
 						}
 					}
@@ -126,17 +126,18 @@ public class GraphMaker {
 			reader.close();
 			ipsr.close();
 			ips.close();
-			initGates(getGraph(), this);
+			if (graph != null && nodes != null)
+				initGates();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	public void initGates(IGraph<String, Object> graph, GraphMaker gm) {
+	public void initGates() {
 		for ( int i = 0; i < doors.size(); i++ ) {
 			List<INode<String,Object>> allAround = getNodeAround(doors.get(i));
-			gm.getGraph().addDepart(new Gate<String, Object>(allAround, graph));
+			graph.addDepart(new Gate<String, Object>(allAround, graph));
 		}
 	}
 	
@@ -146,38 +147,38 @@ public class GraphMaker {
 		
 		// HAUT, BAS, GAUCHE, DROITE
 		co.setX(c.getX() - 1);
-		if(canAddInNodes(co))
+		if(canAddInNodes(co.toString()))
 			around.add(nodes.get(co.toString()));
 		co.setX(c.getX() + 1);
-		if(canAddInNodes(co))
+		if(canAddInNodes(co.toString()))
 			around.add(nodes.get(co.toString()));
 		co.setX(c.getX());
 		co.setY(c.getY() - 1);
-		if(canAddInNodes(co))
+		if(canAddInNodes(co.toString()))
 			around.add(nodes.get(co.toString()));
 		co.setY(c.getY() + 1);
-		if(canAddInNodes(co))
+		if(canAddInNodes(co.toString()))
 			around.add(nodes.get(co.toString()));
 
 		// HAUT - GAUCHE
 		co.setX( c.getX() - 1 );
 		co.setY( c.getY() - 1 );
-		if(canAddInNodes(co))
+		if(canAddInNodes(co.toString()))
 			around.add(nodes.get(co.toString()));
 		
 		// HAUT - DROITE
 		co.setX( c.getX() + 1 );
 		co.setY( c.getY() - 1 );
-		if(canAddInNodes(co))
+		if(canAddInNodes(co.toString()))
 			around.add(nodes.get(co.toString()));
 		
 		return around;
 	}
 	
-	private boolean canAddInNodes(Coordinates c) {
-		if( nodes.get(c.toString()).getValue() != WALL + "" && nodes.get(c.toString()).getValue() != DEPART + "" )
-			return true;
-		return false;
+	private boolean canAddInNodes(String c) {
+		if(nodes.get(c) == null)
+			return false;
+		return true;
 	}
 	
 	public boolean isWellFormed() {
@@ -211,19 +212,19 @@ public class GraphMaker {
 	private boolean wellFormed = true;
 	private List<Coordinates> doors = new ArrayList<>();
 	
-	public static final char FREE_SPACE = ' ';
-	public static final char BUSH       = 'G';
-	public static final char WALL       = '*';
-	public static final char ARRIVAL    = 'A';
-	public static final char DEPART     = 'D'; 
+	public static final char CHAR_FREE_SPACE = ' ';
+	public static final char CHAR_BUSH       = 'G';
+	public static final char CHAR_WALL       = '*';
+	public static final char CHAR_ARRIVAL    = 'A';
+	public static final char CHAR_DEPART     = 'D'; 
 	
 	private List<String> elements = new ArrayList<String>();
 	{
-		elements.add(FREE_SPACE + "");
-		elements.add(BUSH 		+ "");
-		elements.add(WALL 		+ "");
-		elements.add(ARRIVAL	+ "");
-		elements.add(DEPART 	+ "");
+		elements.add(CHAR_FREE_SPACE + "");
+		elements.add(CHAR_BUSH 		+ "");
+		elements.add(CHAR_WALL 		+ "");
+		elements.add(CHAR_ARRIVAL	+ "");
+		elements.add(CHAR_DEPART 	+ "");
 	}
 
 }

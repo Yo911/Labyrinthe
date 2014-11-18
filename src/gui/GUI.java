@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Label;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -64,6 +63,20 @@ public class GUI extends JFrame implements ActionListener {
 		        file = fileChooser.getSelectedFile();
 		        System.out.println("Fichier choisi : " + fileChooser.getSelectedFile());
 				if(file != null) {
+					
+
+//					GraphMaker gm = null;
+//					try {
+//						gm = new GraphMaker(file);
+//					} catch (IOException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//			//
+//					IGraph<String, Object> graph = gm.getGraph();
+					System.out.println("graph made in yehouda :D");
+					//return;
+					
 					jp.removeAll();
 					GraphMaker gm;
 					try {
@@ -72,7 +85,7 @@ public class GUI extends JFrame implements ActionListener {
 							
 							getDetails(gm);
 						} else {
-							jp.add(new Label("The file isn't good ! "));
+							jp.add(new JLabel("The file isn't good ! "));
 							jp.repaint();
 							revalidate();
 						}
