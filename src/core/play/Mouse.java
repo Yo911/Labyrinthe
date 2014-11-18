@@ -33,7 +33,7 @@ public class Mouse<K,V> implements IMouse<K,V> {
 		router.setComparator(CheeseSettings.getComparator());
 		router.setGraph(map);
 		chooseCloserCheese();
-		listeners.add(MoveEventListener.class, CheeseSettings.getNotifier());
+		listeners.add(MoveEventListener.class, MoveEventListener.getListener());
 	}
 
 	@SuppressWarnings("unchecked")
