@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.swing.event.EventListenerList;
 
 import core.dataStructure.graph.interfaces.IGraph;
 import core.dataStructure.graph.interfaces.INode;
@@ -24,12 +25,15 @@ public class Mouse<K,V> implements IMouse<K,V> {
 	private Path route;
 	private boolean canMove;
 	
+	private final EventListenerList listeners = new EventListenerList();
+	
 	public Mouse(INode<K,V> location, IGraph<K,V> map, int counter) {
 		setLocation(location,counter);
 		this.map = map;
 		router.setComparator(CheeseSettings.getComparator());
 		router.setGraph(map);
 		chooseCloserCheese();
+		listeners.add(MoveEventListener.class, CheeseSettings.getNotifier());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -138,13 +142,24 @@ public class Mouse<K,V> implements IMouse<K,V> {
 	@SuppressWarnings("unchecked")
 	private boolean goForward() {
 		try {
+			
+			INode<?,?> oldLocation = this.location;
 			Entry<INode<?,?>, Integer> newLocation = route.pop();
 			setLocation((INode<K, V>) newLocation.getKey(),newLocation.getValue());
 			route.peek(); // Si on est arrivé au fromage une exception est levée;
+			notifyMove(new MoveEventData(oldLocation, newLocation.getKey()));
+			
 		} catch (StackEmptyException e) {
 			leaveLocation();
+			notifyMove(new MoveEventData(getLocation(),null));
 			return true;
 		}
 		return false;
+	}
+	
+	public void notifyMove(MoveEventData event) {
+		for(MoveEventListener listener: listeners.getListeners(MoveEventListener.class)) {
+			listener.onEvent(event);
+		}
 	}
 }

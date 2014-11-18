@@ -7,6 +7,7 @@ import core.router.Path;
 public class CheeseSettings {
 	
 	private static Comparator<Path> comparator;
+	private static MoveEventListener listener;
 
 	public static Comparator<Path> getComparator() {
 		if(comparator == null) {
@@ -24,6 +25,13 @@ public class CheeseSettings {
 
 	public static int getMouseNumberForGate(int j) {
 		return 3;
+	}
+
+	public static MoveEventListener getNotifier() {
+		if( listener == null ) {
+			listener = new MoveEventListener();
+		}
+		return listener;
 	}
 
 }

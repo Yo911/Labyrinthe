@@ -98,12 +98,12 @@ public class CheeseMain {
 					i++;
 					m = rr.next();
 					if(rr.next().doSomething() == true) {
-						System.out.println("Mouse " + m.hashCode() + " location: " + m.getLocation());
+//						System.out.println("Mouse " + m.hashCode() + " location: " + m.getLocation());
 						rr.remove();
 					}
-					else {
-						System.out.println("Mouse " + m.hashCode() + " location: " + m.getLocation());
-					}
+//					else {
+//						System.out.println("Mouse " + m.hashCode() + " location: " + m.getLocation());
+//					}
 				}
 			} while(rr.size() != 0) ;
 		} catch (RoundRobinEmptyException e) {
