@@ -34,6 +34,7 @@ public class Mouse<K,V> implements IMouse<K,V> {
 		router.setGraph(map);
 		chooseCloserCheese();
 		listeners.add(MoveEventListener.class, MoveEventListener.getListener());
+		notifyMove(new MoveEventData(null,this.location));
 	}
 
 	@SuppressWarnings("unchecked")
