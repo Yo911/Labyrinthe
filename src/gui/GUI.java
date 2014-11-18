@@ -152,10 +152,13 @@ public class GUI extends JFrame implements ActionListener {
 	}
 	
 	public void refresh(MoveEventData med) {
-		INode<?,?> node = med.getNodeLeaved();
+		if( med.getNodeLeaved() != null )
+			refreshNode(med.getNodeLeaved());
+		if( med.getNewNode() != null )
+			refreshNode(med.getNewNode());
 	}
 	
-	public void refreshNode(INode<?, ?> node) throws IOException {
+	public void refreshNode(INode<?, ?> node) {
 		Coordinates coo = node.getCoordinates();
 		gbc.gridx = coo.getX();
 		gbc.gridy = coo.getY();
@@ -170,9 +173,14 @@ public class GUI extends JFrame implements ActionListener {
 				img = node.getType() + ".png";
 			}
 		}
-		BufferedImage myPicture = ImageIO.read(new File("images/" + img + ".png"));
-		JLabel picLabel = new JLabel(new ImageIcon(myPicture));
-		jp.add(picLabel, gbc);
+		try {
+			BufferedImage myPicture = ImageIO.read(new File("images/" + img + ".png"));
+			JLabel picLabel = new JLabel(new ImageIcon(myPicture));
+			jp.add(picLabel, gbc);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
