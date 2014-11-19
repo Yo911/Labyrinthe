@@ -1,7 +1,6 @@
 package core.play;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -18,7 +17,7 @@ import core.router.djisktra.DjisktraRouter;
 public class Mouse<K,V> implements IMouse<K,V> {
 	
 	private INode<K,V> cheese;
-	private INode<K,V> location;
+	private INode<K,V> location = null;
 	private int counter;
 	private IGraph<K,V> map;
 	private IRouter<K,V> router = new DjisktraRouter<>();
@@ -40,12 +39,12 @@ public class Mouse<K,V> implements IMouse<K,V> {
 
 	@SuppressWarnings("unchecked")
 	private void chooseCloserCheese() {
-		List<INode<K,V>> cheeses = map.getArrival();
+		Set<INode<K,V>> cheeses = map.getArrival();
 		System.out.println(cheeses.size());
 		LinkedPriorityQueue<Path> queue = new LinkedPriorityQueue<>(CheeseSettings.getComparator());
 		for(INode<K,V> c : cheeses) {
-			System.out.println("location isContained " + map.contains(location));
-			System.out.println("cheese isContained " + map.contains(c));
+			System.out.println("location isContained " + map.contains(location) + " : " + location);
+			System.out.println("cheese isContained " + map.contains(c) + " : " + c);
 			queue.add(router.findRoute((INode<K,V>)location,c));
 		}
 		try {

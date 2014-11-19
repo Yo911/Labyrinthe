@@ -1,12 +1,12 @@
 package core.dataStructure.graph;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import core.dataStructure.graph.interfaces.IEdge;
 import core.dataStructure.graph.interfaces.IGraph;
@@ -15,8 +15,8 @@ import core.dataStructure.graph.interfaces.INode;
 public class Graph<K,V> implements IGraph<K,V> {
 
 	private Map<K,INode<K,V>> nodes = new HashMap<K,INode<K,V>>();
-	private List<Gate<K, V>> depart  = new ArrayList<Gate<K, V>>();
-	private List<INode<K, V>> arrival = new ArrayList<INode<K, V>>();
+	private Set<Gate<K, V>> depart  = new HashSet<Gate<K, V>>();
+	private Set<INode<K, V>> arrival = new HashSet<INode<K, V>>();
 	
 	public INode<K, V> getNode(K key) {
 		return nodes.get(key);
@@ -62,7 +62,7 @@ public class Graph<K,V> implements IGraph<K,V> {
 		return false;
 	}
 
-	public List<Gate<K, V>> getDepartures() {
+	public Set<Gate<K, V>> getDepartures() {
 		return depart;
 	}
 
@@ -70,7 +70,7 @@ public class Graph<K,V> implements IGraph<K,V> {
 		this.depart.add(depart);
 	}
 
-	public List<INode<K, V>> getArrival() {
+	public Set<INode<K, V>> getArrival() {
 		return arrival;
 	}
 

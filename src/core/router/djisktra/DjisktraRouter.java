@@ -67,7 +67,6 @@ public class DjisktraRouter<K,V> implements IRouter<K,V>{
 		NextStepsPriorityQueue queue = new NextStepsPriorityQueue();
 		queue.addForbiddenNextSteps(forbiddenSteps);
 		queue.add(path);
-		
 		try {
 			while(!queue.peek().peek().getKey().equals(end)) {
 				queue.getNextStep();
@@ -103,12 +102,17 @@ public class DjisktraRouter<K,V> implements IRouter<K,V>{
 			addValidePathFrom(path);
 		}
 		
-		private void removeMarkedNode(INode<K,V> node) {
+		private synchronized void removeMarkedNode(INode<K,V> node) {
 			markedNodes.add(node);
 			Iterator<Path> it = iterator();
 			while(it.hasNext()) {
-				try {
-					if(it.next().peek().equals(node)) {
+				try { 
+					Path p = it.next();
+					System.out.println("nodeId : " + node.getId());
+					System.out.println("pId : " + p.peek().getKey().getId());
+					if(p.peek().getKey().getId().equals(node.getId())) {
+						System.out.println(p.peek());
+						
 						it.remove();
 					}
 				} catch (StackEmptyException e) {

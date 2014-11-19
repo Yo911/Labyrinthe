@@ -1,7 +1,7 @@
 package core.dataStructure.graph.interfaces;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 
 import core.dataStructure.graph.Gate;
 
@@ -13,6 +13,6 @@ public interface IGraph<K,V> {
 	public boolean contains(INode<K, V> node);
 	public void addArrival(INode<K, V> arrival);
 	public void addDepart(Gate<K, V> depart);
-	public List<Gate<K, V>> getDepartures();
-	public List<INode<K, V>> getArrival();
+	public Set<Gate<K, V>> getDepartures();
+	public Set<INode<K, V>> getArrival();
 }

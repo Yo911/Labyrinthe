@@ -15,9 +15,9 @@ public class Gate<K,V> {
 	private int mouseNumber;
 	private IGraph<K,V> graph;
 	
-	public Gate(Collection<INode<K,V>> departures, IGraph<K,V> graph) {
-		this.departures = new HashSet<>();
-		this.departures.addAll(departures);
+	public Gate(Set<INode<K,V>> departures, IGraph<K,V> graph) {
+		//this.departures = new HashSet<>();
+		this.departures = departures;
 		this.mouseNumber = 0;
 		this.graph = graph;
 	}
@@ -27,7 +27,8 @@ public class Gate<K,V> {
 	}
 	
 	public Set<IMouse<K,V>> getNewMouses() {
-		if(this.mouseNumber < 0) return null; //On ne peut plus créer de soucis par cette porte
+		if(this.mouseNumber <= 0) return null; //On ne peut plus créer de soucis par cette porte
+		System.out.println("in get new mouse : " + departures.size());
 		Set<IMouse<K,V>> newMouses = null;
 		for(INode<K,V> departure : departures) {
 			if(!departure.isUsed()) {
@@ -35,9 +36,9 @@ public class Gate<K,V> {
 				if(newMouses == null) {
 					newMouses = new HashSet<>();
 				}
-				System.out.println("efgvrvgr");
 				newMouses.add(new Mouse<K,V>(departure,graph,1));
-				System.out.println("after mik la dit");
+				if(this.mouseNumber <= 0)
+					break;
 			}
 		}
 		return newMouses;
