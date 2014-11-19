@@ -30,10 +30,8 @@ public class Mouse<K,V> implements IMouse<K,V> {
 	public Mouse(INode<K,V> location, IGraph<K,V> map, int counter) {
 		setLocation(location,counter);
 		this.map = map;
-		System.out.println("first loc " + this.location);
 		router.setComparator(CheeseSettings.getComparator());
 		router.setGraph(map);
-		System.out.println("la");
 		chooseCloserCheese();
 		listeners.add(MoveEventListener.class, MoveEventListener.getListener());
 		notifyMove(new MoveEventData(null,this.location));
@@ -46,8 +44,8 @@ public class Mouse<K,V> implements IMouse<K,V> {
 		System.out.println(cheeses.size());
 		LinkedPriorityQueue<Path> queue = new LinkedPriorityQueue<>(CheeseSettings.getComparator());
 		for(INode<K,V> c : cheeses) {
-			System.out.println("loc" + map.contains(location));
-			System.out.println("c" + map.contains(c));
+			System.out.println("location isContained " + map.contains(location));
+			System.out.println("cheese isContained " + map.contains(c));
 			queue.add(router.findRoute((INode<K,V>)location,c));
 		}
 		try {

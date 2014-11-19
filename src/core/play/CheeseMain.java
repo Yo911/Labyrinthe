@@ -2,7 +2,9 @@ package core.play;
 
 
 import java.util.List;
+
 import javax.swing.SwingUtilities;
+
 import core.dataStructure.graph.Gate;
 import core.dataStructure.graph.interfaces.IGraph;
 import core.dataStructure.roundRobin.IRoundRobin;
@@ -27,7 +29,6 @@ public class CheeseMain {
 		
 		List<Gate<String, Object>> departures = graph.getDepartures();
 
-		System.out.println("dep size = " + departures.size());
 		for(int j = 0; j < departures.size(); j++) {
 			departures.get(j).setMouseNumber(CheeseSettings.getMouseNumberForGate(j));
 		}
@@ -36,31 +37,33 @@ public class CheeseMain {
 						IMouse<String,Object> m = null;
 		try {
 			do {
-				System.out.println("do");
 				for(Gate<String, Object> gate : departures) {
 					System.out.println("in for : gate = " + gate);
 					rr.add(gate.getNewMouses());
 				}
 				
+				System.out.println("size = " + rr.size());
+				
 				if(rr.size() != 0) {
 					
-									System.out.println("size = " + rr.size());
-					
-//									if(i%rr.size() == 0)
-//										System.out.println("-----");
-					
 					i++;
-									m = rr.next();
+					m = rr.next();
+					
 					if(rr.next().doSomething() == true) {
-										System.out.println("Mouse " + m.hashCode() + " location: " + m.getLocation());
+						System.out.println("Mouse " + m.hashCode() + " location: " + m.getLocation());
 						rr.remove();
 					}
-									else {
-										System.out.println("Mouse " + m.hashCode() + " location: " + m.getLocation());
-									}
+					else {
+						System.out.println("Mouse " + m.hashCode() + " location: " + m.getLocation());
+					}
+					
+					Thread.sleep(1000);
 				}
 			} while(rr.size() != 0) ;
 		} catch (RoundRobinEmptyException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		System.out.println(i);
