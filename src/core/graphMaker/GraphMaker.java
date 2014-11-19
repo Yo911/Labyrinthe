@@ -41,7 +41,11 @@ public class GraphMaker {
 			while ((line = reader.readLine()) != null) {
 				if ( line.equals("\n") )
 						continue;
-				lineLength = line.length();
+				if( i == 0)
+					lineLength = line.length();
+				wellFormed = isGoodLine(line, i);
+				if( !wellFormed )
+					return;
 				line = line.replace("\n", "");
 				text += line;
 				for (int j = 0; j < line.length(); j++) {
@@ -203,11 +207,23 @@ public class GraphMaker {
 		return around;
 	}
 	
+	private boolean isGoodLine(String line, int idx) {
+		if(lineLength != line.length())
+			return false;
+		if(idx == 0) {
+			String ref = "";
+			for (int i = 0; i < line.length(); i++)
+				ref += "*";
+			if ( ref.equals(line) )
+				return true;
+		} else {
+			if(line.charAt(0) == '*' && line.endsWith("*"))
+				return true;
+		}
+		return false;
+	}
+	
 	private boolean canAddInNodes(String c) {
-//		type = "bush";
-//		type = "free";
-//		type = "arrival";
-//		type = "depart";
 		if(nodes.get(c) == null)
 			return false;
 		return true;
