@@ -35,7 +35,9 @@ public class Gate<K,V> {
 				if(newMouses == null) {
 					newMouses = new HashSet<>();
 				}
+				System.out.println("efgvrvgr");
 				newMouses.add(new Mouse<K,V>(departure,graph,1));
+				System.out.println("after mik la dit");
 			}
 		}
 		return newMouses;

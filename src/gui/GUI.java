@@ -26,6 +26,7 @@ import core.dataStructure.graph.GenericNode;
 import core.dataStructure.graph.interfaces.IGraph;
 import core.dataStructure.graph.interfaces.INode;
 import core.graphMaker.GraphMaker;
+import core.play.CheeseMain;
 import core.play.MoveEventData;
 
 public class GUI extends JFrame implements ActionListener {
@@ -68,6 +69,7 @@ public class GUI extends JFrame implements ActionListener {
 					jp.removeAll();
 					try {
 						gm = new GraphMaker(file);
+						ready = true;
 						if( drawField() ) {
 							
 							getDetails();
@@ -105,8 +107,20 @@ public class GUI extends JFrame implements ActionListener {
 		for(int j = 0 ; j < lengthMax / iMax ; j++) {
 			for(int i = 0; i < iMax; i++) {
 				Coordinates co = new Coordinates(i, j);
+				gbc.gridy = j;
+				gbc.gridx = i;
+				gbc.gridheight = 1;
+				gbc.gridwidth = 1;
+				String img = "wall.png";
 				GenericNode<String, Object> node = nodes.get(co.toString());
-				refreshNode(node);
+				if ( node != null ) {
+					img = node.getType() + ".png";
+				}
+				BufferedImage myPicture = ImageIO.read(new File("images/" + img));
+				JLabel picLabel = new JLabel(new ImageIcon(myPicture));
+				jp.add(picLabel, gbc);
+				jp.repaint();
+				revalidate();
 			}
 		}
 		return true;
@@ -126,7 +140,7 @@ public class GUI extends JFrame implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
-				
+				CheeseMain.letsGo(getGraph());
 			}
 			
 		});
@@ -182,7 +196,11 @@ public class GUI extends JFrame implements ActionListener {
 	}
 
 	public IGraph<String, Object> getGraph() {
-		return gm.getGraph();
+		return (gm == null) ? null : gm.getGraph();
+	}
+	
+	public boolean isReady() {
+		return ready;
 	}
 	
 	// composant graphique
@@ -191,7 +209,8 @@ public class GUI extends JFrame implements ActionListener {
 	private Dimension dimension;
 	private File file;
 	private GraphMaker gm;
-	private static GUI gui;
+	private boolean ready = false;
+	private volatile static GUI gui;
 	
 
 	JPanel jp 		 	   = new JPanel();

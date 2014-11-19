@@ -37,7 +37,7 @@ public class GraphMaker {
 			char c = 0;
 			int i = 0, k = 0;
 			Coordinates coordinates = new Coordinates();
-			Coordinates ref       = new Coordinates();
+			Coordinates ref         = new Coordinates();
 			while ((line = reader.readLine()) != null) {
 				if ( line.equals("\n") )
 						continue;
@@ -52,7 +52,7 @@ public class GraphMaker {
 					coordinates.setCoordinates(j, i);
 					ref.setCoordinates(j, i);
 					if( c != CHAR_WALL ) {
-						int cost = 0;
+						int cost = 1;
 						String type = "";
 						switch (c) {
 								case CHAR_BUSH :
@@ -76,17 +76,18 @@ public class GraphMaker {
 									System.out.println("default case");
 									return;
 						}
-						GenericNode<String, Object> n = new GenericNode<String, Object>(coordinates.toString());
 
-						if (c == CHAR_ARRIVAL) {
-							graph.addArrival(n);
-						}
-						
-						n.setType(type);
-						n.getCoordinates().setCoordinates(coordinates);
-						nodes.put(ref.toString(), n);
-						graph.registerNode(n);
-						if (i != 0 && c != CHAR_WALL) {
+						if (i != 0 && c != CHAR_WALL && c != CHAR_DEPART) {
+							GenericNode<String, Object> n = new GenericNode<String, Object>(coordinates.toString());
+	
+							if (c == CHAR_ARRIVAL) {
+								graph.addArrival(n);
+							}
+							
+							n.setType(type);
+							n.getCoordinates().setCoordinates(coordinates);
+							nodes.put(ref.toString(), n);
+							graph.registerNode(n);
 							// GAUCHE
 							if (line.charAt(j - 1) != CHAR_WALL && line.charAt(j - 1) != CHAR_DEPART) {
 								ref.setCoordinates(coordinates);
@@ -137,6 +138,11 @@ public class GraphMaker {
 	public void initGates() {
 		for ( int i = 0; i < doors.size(); i++ ) {
 			List<INode<String,Object>> allAround = getNodeAround(doors.get(i));
+			System.out.println("list nodes allAround");
+			for(INode<String,Object> n : allAround) {
+				System.out.println(n);
+			}
+			System.out.println();
 			graph.addDepart(new Gate<String, Object>(allAround, graph));
 		}
 	}
@@ -146,29 +152,51 @@ public class GraphMaker {
 		Coordinates co = new Coordinates(c);
 		
 		// HAUT, BAS, GAUCHE, DROITE
+		co.setCoordinates(c);
 		co.setX(c.getX() - 1);
 		if(canAddInNodes(co.toString()))
 			around.add(nodes.get(co.toString()));
+		
+		co.setCoordinates(c);
 		co.setX(c.getX() + 1);
 		if(canAddInNodes(co.toString()))
 			around.add(nodes.get(co.toString()));
-		co.setX(c.getX());
+		
+		co.setCoordinates(c);
 		co.setY(c.getY() - 1);
 		if(canAddInNodes(co.toString()))
 			around.add(nodes.get(co.toString()));
+		
+		co.setCoordinates(c);
 		co.setY(c.getY() + 1);
 		if(canAddInNodes(co.toString()))
 			around.add(nodes.get(co.toString()));
 
 		// HAUT - GAUCHE
+		co.setCoordinates(c);
 		co.setX( c.getX() - 1 );
 		co.setY( c.getY() - 1 );
 		if(canAddInNodes(co.toString()))
 			around.add(nodes.get(co.toString()));
 		
 		// HAUT - DROITE
+		co.setCoordinates(c);
 		co.setX( c.getX() + 1 );
 		co.setY( c.getY() - 1 );
+		if(canAddInNodes(co.toString()))
+			around.add(nodes.get(co.toString()));
+
+		// BAS - GAUCHE
+		co.setCoordinates(c);
+		co.setX( c.getX() - 1 );
+		co.setY( c.getY() + 1 );
+		if(canAddInNodes(co.toString()))
+			around.add(nodes.get(co.toString()));
+		
+		// BAS - DROITE
+		co.setCoordinates(c);
+		co.setX( c.getX() + 1 );
+		co.setY( c.getY() + 1 );
 		if(canAddInNodes(co.toString()))
 			around.add(nodes.get(co.toString()));
 		
@@ -176,7 +204,11 @@ public class GraphMaker {
 	}
 	
 	private boolean canAddInNodes(String c) {
-		if(nodes.get(c) == null)
+//		type = "bush";
+//		type = "free";
+//		type = "arrival";
+//		type = "depart";
+		if(nodes.get(c) == null || nodes.get(c).getType().equals("depart"))
 			return false;
 		return true;
 	}
