@@ -70,7 +70,7 @@ public class GraphMaker {
 								case CHAR_DEPART :
 									cost = 1;
 									type = "depart";
-									doors.add(coordinates);
+									gates.add(new Coordinates(j, i));
 									break;
 								default:
 									System.out.println("default case");
@@ -136,8 +136,8 @@ public class GraphMaker {
 	}
 	
 	public void initGates() {
-		for ( int i = 0; i < doors.size(); i++ ) {
-			List<INode<String,Object>> allAround = getNodeAround(doors.get(i));
+		for ( int i = 0; i < gates.size(); i++ ) {
+			List<INode<String,Object>> allAround = getNodeAround(gates.get(i));
 			System.out.println("list nodes allAround");
 			for(INode<String,Object> n : allAround) {
 				System.out.println(n);
@@ -208,7 +208,7 @@ public class GraphMaker {
 //		type = "free";
 //		type = "arrival";
 //		type = "depart";
-		if(nodes.get(c) == null || nodes.get(c).getType().equals("depart"))
+		if(nodes.get(c) == null)
 			return false;
 		return true;
 	}
@@ -237,12 +237,16 @@ public class GraphMaker {
 		return lineLength;
 	}
 	
+	public List<Coordinates> getGates() {
+		return gates;
+	}
+	
 	private int fileLength;
 	private int lineLength;
 	private Graph<String, Object> graph;
 	private Map<String, GenericNode<String, Object>> nodes = new HashMap<String, GenericNode<String, Object>>();
 	private boolean wellFormed = true;
-	private List<Coordinates> doors = new ArrayList<>();
+	private List<Coordinates> gates = new ArrayList<>();
 	
 	public static final char CHAR_FREE_SPACE = ' ';
 	public static final char CHAR_BUSH       = 'G';

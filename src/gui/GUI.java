@@ -111,12 +111,20 @@ public class GUI extends JFrame implements ActionListener {
 				gbc.gridx = i;
 				gbc.gridheight = 1;
 				gbc.gridwidth = 1;
-				String img = "wall.png";
+				String img = "wall";
+				for(int k = 0; k < gm.getGates().size(); k++) {
+					Coordinates c = gm.getGates().get(k);
+					System.out.println(c + "  |||  " + co);
+					if(c.toString().equals(co.toString())) {
+						System.out.println("here");
+						img = "depart";
+					}
+				}
 				GenericNode<String, Object> node = nodes.get(co.toString());
 				if ( node != null ) {
-					img = node.getType() + ".png";
+					img = node.getType();
 				}
-				BufferedImage myPicture = ImageIO.read(new File("images/" + img));
+				BufferedImage myPicture = ImageIO.read(new File("images/" + img + ".png"));
 				JLabel picLabel = new JLabel(new ImageIcon(myPicture));
 				jp.add(picLabel, gbc);
 				jp.repaint();
@@ -125,7 +133,7 @@ public class GUI extends JFrame implements ActionListener {
 		}
 		return true;
 	}
-	
+
 	private void getDetails() {
 		for ( int i = 0; i < gm.getGraph().getDepartures().size(); i++ ) {
 			JLabel nbMousesByGateLabel = new JLabel( "Porte" + (i + 1) );
@@ -169,9 +177,11 @@ public class GUI extends JFrame implements ActionListener {
 			img = "mouse";
 		} else {
 			if ( node != null ) {
-				img = node.getType() + ".png";
+				img = node.getType();
 			}
 		}
+		if (gm.getGates().contains(coo))  
+			img = "depart";
 		try {
 			BufferedImage myPicture = ImageIO.read(new File("images/" + img + ".png"));
 			JLabel picLabel = new JLabel(new ImageIcon(myPicture));
