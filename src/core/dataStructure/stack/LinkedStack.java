@@ -1,7 +1,7 @@
 package core.dataStructure.stack;
 
-import java.util.Iterator;
 
+import java.util.Iterator;
 import core.dataStructure.linkedList.simple.ILinkSimple;
 import core.dataStructure.linkedList.simple.LinkSimple;
 import core.dataStructure.stack.exceptions.StackEmptyException;
@@ -9,7 +9,7 @@ import core.dataStructure.stack.exceptions.StackEmptyException;
 
 public class LinkedStack<V> implements ILifo<V>, Cloneable {
 
-	ILinkSimple<V> pileTop = null;
+	private ILinkSimple<V> pileTop = null;
 	
 	public Iterator<V> iterator() {
 		

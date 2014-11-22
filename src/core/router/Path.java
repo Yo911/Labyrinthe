@@ -61,10 +61,6 @@ public class Path implements Cloneable {
 		return new Path(path.clone(),cost);
 	}
 	
-	public Iterator<Entry<INode<?,?>,Integer>> iterator() {
-		return path.iterator();
-	}
-
 	public Path revert() {
 		Path tmp = clone();
 		Path revert = new Path();
