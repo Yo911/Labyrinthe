@@ -43,7 +43,6 @@ public class GraphValidator {
 		boolean cheeseFound;
 		
 		for(INode<String,Object> depart : cases) {
-			
 			cheeseFound = false;
 			
 			for(INode<String,Object> cheese : cheeses) {
@@ -57,9 +56,12 @@ public class GraphValidator {
 			checkedNumber++;
 			
 			if(cheeseFound == true) {
-				potentialFriends = gate.getCaseAround();
+				potentialFriends = new HashSet<>();
+				potentialFriends.addAll(gate.getCaseAround());
 				potentialFriends.removeAll(checkedCases);
-				checkedNumber += getFriendInGate(depart, potentialFriends, cases.size() - checkedNumber);
+				if(!potentialFriends.isEmpty()) {
+					checkedNumber += getFriendInGate(depart, potentialFriends, cases.size() - checkedNumber);
+				}
 			}
 			else {
 				gate.unvalidate(depart);
@@ -90,7 +92,8 @@ public class GraphValidator {
 				maybeFriends.addAll(potentialFriends);
 				maybeFriends.remove(neighbour.getKey());
 				
-				checkedNumber += getFriendInGate(neighbour.getKey(), maybeFriends, max - 1);
+				if(!maybeFriends.isEmpty())
+					checkedNumber += getFriendInGate(neighbour.getKey(), maybeFriends, max - 1);
 			}
 		}
 		
