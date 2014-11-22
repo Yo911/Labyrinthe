@@ -1,5 +1,102 @@
 package core.graphMaker;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import core.dataStructure.graph.Gate;
+import core.dataStructure.graph.interfaces.IGraph;
+import core.dataStructure.graph.interfaces.INode;
+import core.play.CheeseSettings;
+import core.router.IRouter;
+import core.router.Path;
+import core.router.djisktra.DjisktraRouter;
+
 public class GraphValidator {
+	
+	private static IRouter<String,Object> router;
+	
+	static {
+		router = new DjisktraRouter<>();
+		router.setComparator(CheeseSettings.getComparator());
+	}
+	
+	public static void forbidDeadlock(IGraph<String,Object> graph) {
+		
+		router.setGraph(graph);
+		
+		Collection<Gate<String,Object>> gates = graph.getDepartures();
+		Collection<INode<String,Object>> cheeses = graph.getArrival();
+		
+		for(Gate<String,Object> gate : gates) {
+			validateGateDepartures(gate,cheeses);
+		}
+	}
+
+	private static void validateGateDepartures(Gate<String,Object> gate, Collection<INode<String, Object>> cheeses) {
+		
+		Collection<INode<String,Object>> cases = gate.getCaseAround();
+		Collection<INode<String,Object>> potentialFriends;
+		Set<INode<String,Object>> checkedCases = new HashSet<>();
+		int checkedNumber = 0;
+		boolean cheeseFound;
+		
+		for(INode<String,Object> depart : cases) {
+			
+			cheeseFound = false;
+			
+			for(INode<String,Object> cheese : cheeses) {
+				if(router.findRoute(depart,cheese) != Path.EMPTY) {
+					cheeseFound = true;
+					break;
+				}
+			}
+			
+			checkedCases.add(depart);
+			checkedNumber++;
+			
+			if(cheeseFound == true) {
+				potentialFriends = gate.getCaseAround();
+				potentialFriends.removeAll(checkedCases);
+				checkedNumber += getFriendInGate(depart, potentialFriends, cases.size() - checkedNumber);
+			}
+			else {
+				gate.unvalidate(depart);
+			}
+			
+			if(checkedNumber == cases.size()) {
+				break;
+			}
+		}
+	}
+
+	private static int getFriendInGate(INode<String, Object> depart, Collection<INode<String, Object>> potentialFriends, int max) {
+		
+		Set<Entry<INode<String, Object>, Integer>> neighbours = depart.getNeighBours();
+		Collection<INode<String, Object>> maybeFriends;
+		int checkedNumber = 0;
+		
+		for(Entry<INode<String, Object>, Integer> neighbour : neighbours) {
+			if(potentialFriends.contains(neighbour.getKey())) {
+				
+				checkedNumber++;
+				
+				if(checkedNumber == max) {
+					break;
+				}
+				
+				maybeFriends = new HashSet<>();
+				maybeFriends.addAll(potentialFriends);
+				maybeFriends.remove(neighbour.getKey());
+				
+				checkedNumber += getFriendInGate(neighbour.getKey(), maybeFriends, max - 1);
+			}
+		}
+		
+		return checkedNumber;
+	}
+
+
 
 }
