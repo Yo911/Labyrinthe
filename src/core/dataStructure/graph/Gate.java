@@ -1,6 +1,5 @@
 package core.dataStructure.graph;
 
-import java.util.Collection;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -16,7 +15,6 @@ public class Gate<K,V> {
 	private IGraph<K,V> graph;
 	
 	public Gate(Set<INode<K,V>> departures, IGraph<K,V> graph) {
-		//this.departures = new HashSet<>();
 		this.departures = departures;
 		this.mouseNumber = 0;
 		this.graph = graph;
@@ -24,6 +22,10 @@ public class Gate<K,V> {
 	
 	public void setMouseNumber(int mouseNumber) {
 		this.mouseNumber = mouseNumber;
+	}
+	
+	public Set<INode<K,V>> getCaseAround() {
+		return departures;
 	}
 	
 	public Set<IMouse<K,V>> getNewMouses() {
@@ -42,5 +44,9 @@ public class Gate<K,V> {
 			}
 		}
 		return newMouses;
+	}
+
+	public void unvalidate(INode<K,V> depart) {
+		departures.remove(depart);
 	}
 }

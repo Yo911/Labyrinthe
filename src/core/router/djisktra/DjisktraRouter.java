@@ -60,6 +60,7 @@ public class DjisktraRouter<K,V> implements IRouter<K,V>{
 		}
 		
 		if(!graph.contains(start) || !graph.contains(end)) {
+			System.out.println("ok");
 			return Path.EMPTY;
 		}
 		
@@ -69,7 +70,9 @@ public class DjisktraRouter<K,V> implements IRouter<K,V>{
 		queue.add(path);
 		try {
 			while(!queue.peek().peek().getKey().equals(end)) {
-				queue.getNextStep();
+				if(queue.getNextStep() == false) {
+					return Path.EMPTY;
+				}
 			}
 		} catch (StackEmptyException e) {
 			throw new RuntimeException("Erreur de programmation makeDjisktra");
@@ -92,28 +95,26 @@ public class DjisktraRouter<K,V> implements IRouter<K,V>{
 		}
 
 		@SuppressWarnings("unchecked")
-		public void getNextStep() {
+		public boolean getNextStep() {
 			Path path = remove();
 			try {
 				removeMarkedNode((INode<K,V>)path.peek().getKey());
 			} catch (StackEmptyException e) {
 				throw new RuntimeException("Erreur de programmation getNextStep");
 			}
-			addValidePathFrom(path);
+		
+			return addValidePathFrom(path);
 		}
 		
-		private synchronized void removeMarkedNode(INode<K,V> node) {
+		private void removeMarkedNode(INode<K,V> node) {
 			markedNodes.add(node);
 			Iterator<Path> it = iterator();
 			while(it.hasNext()) {
 				try { 
 					Path p = it.next();
-					System.out.println("nodeId : " + node.getId());
-					System.out.println("pId : " + p.peek().getKey().getId());
-					if(p.peek().getKey().getId().equals(node.getId())) {
-						System.out.println(p.peek());
-						
+					if(p.peek().getKey().equals(node)) {
 						it.remove();
+						break;
 					}
 				} catch (StackEmptyException e) {
 					throw new RuntimeException("Erreur de programmation removeMarkedNode");
@@ -122,7 +123,8 @@ public class DjisktraRouter<K,V> implements IRouter<K,V>{
 		}
 
 		@SuppressWarnings("unchecked")
-		public void addValidePathFrom(Path path) {
+		public boolean addValidePathFrom(Path path) {
+			boolean haveAdd = false;
 			INode<K,V> node = null;
 			try {
 				node = (INode<K,V>) path.peek().getKey();
@@ -139,9 +141,11 @@ public class DjisktraRouter<K,V> implements IRouter<K,V>{
 						newPath = path.clone();
 						newPath.add(neighboor.getKey(), neighboor.getValue());
 						add(newPath);
+						haveAdd = true;
 				}
 			}
 			forbiddenNextSteps = null;
+			return haveAdd;
 		}
 	}
 }
