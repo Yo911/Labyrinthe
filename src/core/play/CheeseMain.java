@@ -73,7 +73,7 @@ public class CheeseMain {
 		System.out.println(i);
 	}
 
-	public synchronized static boolean makeGraph(File file) {
+	public static boolean makeGraph(File file) {
 		
 		GraphMaker gm = null;
 		
@@ -83,12 +83,7 @@ public class CheeseMain {
 			e.printStackTrace();
 		}
 		
-		System.out.println("dkjfqk");
-		
-		boolean result = gm.isWellFormed();
-		System.out.println("2222");
-		result &= (new GraphValidator()).forbidDeadlock(gm.getGraph());
-		
+		boolean result = gm.isWellFormed() && (new GraphValidator()).forbidDeadlock(gm.getGraph()) ;
 		if(result == true) {
 			CheeseSettings.setGraphMaker(gm);
 			CheeseSettings.setGraph(gm.getGraph());

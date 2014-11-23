@@ -1,11 +1,9 @@
 package core.graphMaker;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -27,7 +25,6 @@ import core.dataStructure.graph.interfaces.INode;
 public class GraphMaker {
 	
 	public GraphMaker(File f) throws IOException {
-		// TODO Auto-generated constructor stub
 		
 		try {
 			InputStream ips = new FileInputStream(f);
@@ -38,7 +35,6 @@ public class GraphMaker {
 			graph = new Graph<String, Object>();
 			String line;
 			String text = "";
-			String test = "";
 			char c = 0;
 			int i = 0, k = 0;
 			Coordinates coordinates = new Coordinates();
@@ -79,7 +75,6 @@ public class GraphMaker {
 								case CHAR_DEPART :
 									cost = 1;
 									type = "depart";
-									test += coordinates + " D | ";
 									gates.add(new Coordinates(j, i));
 									break;
 								default:
@@ -103,7 +98,6 @@ public class GraphMaker {
 								ref.setCoordinates(coordinates);
 								ref.setX(coordinates.getX() - 1);
 								new GenericEdge(n, nodes.get(ref.toString()), (line.charAt(j - 1) != CHAR_BUSH) ? cost : 2);
-								test += n + "-" + nodes.get(ref.toString()) + " | ";
 							}
 	
 							// HAUT
@@ -111,7 +105,6 @@ public class GraphMaker {
 								ref.setCoordinates(coordinates);
 								ref.setY(coordinates.getY() - 1);
 								new GenericEdge(n, nodes.get(ref.toString()), (text.charAt(k - line.length()) != CHAR_BUSH) ? cost : 2);
-								test += n + "-" + nodes.get(ref.toString()) + " | ";
 							}
 
 							// HAUT - GAUCHE
@@ -120,7 +113,6 @@ public class GraphMaker {
 								ref.setX(coordinates.getX() - 1);
 								ref.setY(coordinates.getY() - 1);
 								new GenericEdge(n, nodes.get(ref.toString()), (text.charAt(k - line.length() - 1) != CHAR_BUSH) ? cost : 2);
-								test += n + "-" + nodes.get(ref.toString()) + " | ";
 							}
 
 							// HAUT - DROITE
@@ -129,11 +121,8 @@ public class GraphMaker {
 								ref.setX(coordinates.getX() + 1);
 								ref.setY(coordinates.getY() - 1);
 								new GenericEdge(n, nodes.get(ref.toString()), (text.charAt(k - line.length() + 1) != CHAR_BUSH) ? cost : 2);
-								test += n + "-" + nodes.get(ref.toString()) + " | ";
 							}
 						}
-					} else {
-						test += coordinates + " *  | ";
 					}
 					k++;
 				}
@@ -146,24 +135,7 @@ public class GraphMaker {
 			if (graph != null && nodes != null) {
 				initGates();
 			}
-			//getTest(test);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	private void getTest(String t) {
-		String txt = "C:/Users/Yehouda/Desktop/resultGraph.txt";
-		//File f = new File("C:/Users/Yehouda/Desktop/resultGraph.txt");
-		try {
-			FileWriter fw = new FileWriter(txt, true);
-			BufferedWriter output = new BufferedWriter(fw);
-			output.write(t);
-			output.flush();
-			output.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

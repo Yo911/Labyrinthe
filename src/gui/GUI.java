@@ -10,11 +10,14 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -22,12 +25,16 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import core.dataStructure.graph.Coordinates;
+import core.dataStructure.graph.Gate;
 import core.dataStructure.graph.GenericNode;
-import core.dataStructure.graph.interfaces.IGraph;
 import core.dataStructure.graph.interfaces.INode;
+import core.dataStructure.roundRobin.IRoundRobin;
+import core.dataStructure.roundRobin.RoundRobinFIFO;
+import core.dataStructure.roundRobin.exceptions.RoundRobinEmptyException;
 import core.graphMaker.GraphMaker;
 import core.play.CheeseMain;
 import core.play.CheeseSettings;
+import core.play.IMouse;
 import core.play.MoveEventData;
 
 public class GUI extends JFrame implements ActionListener {
@@ -58,13 +65,8 @@ public class GUI extends JFrame implements ActionListener {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				
-				// création de la boîte de dialogue
 		        JFileChooser fileChooser = new JFileChooser();
-		        
-		        // affichage
 		        fileChooser.showOpenDialog(null);
-				
-		        // récupération du fichier sélectionné
 		        file = fileChooser.getSelectedFile();
 				if(file != null) {
 					jp.removeAll();
@@ -72,14 +74,8 @@ public class GUI extends JFrame implements ActionListener {
 						
 						boolean graphIsWellFormed = CheeseMain.makeGraph(file);
 						
-						System.out.println("je pashh");
-						
-						gm = CheeseSettings.getGraphMaker();
-						graph = CheeseSettings.getGraph();
-						
-						System.out.println("laliqushdflqkushdflqk");
-						
 						if(graphIsWellFormed) {
+							gm = CheeseSettings.getGraphMaker();
 							drawField();
 							getDetails();
 						}
@@ -108,7 +104,7 @@ public class GUI extends JFrame implements ActionListener {
 		setVisible(true);
 	}
 
-	boolean drawField() throws IOException {
+	void drawField() throws IOException {
 
 		Map<String, GenericNode<String, Object>> nodes = gm.getNodes();
 		int lengthMax = gm.getLength();
@@ -124,9 +120,7 @@ public class GUI extends JFrame implements ActionListener {
 				String img = "wall";
 				for(int k = 0; k < gm.getGates().size(); k++) {
 					Coordinates c = gm.getGates().get(k);
-					System.out.println(c + "  |||  " + co);
 					if(c.toString().equals(co.toString())) {
-						System.out.println("here");
 						img = "depart";
 					}
 				}
@@ -137,11 +131,11 @@ public class GUI extends JFrame implements ActionListener {
 				BufferedImage myPicture = ImageIO.read(new File("images/" + img + ".png"));
 				JLabel picLabel = new JLabel(new ImageIcon(myPicture));
 				jp.add(picLabel, gbc);
-				jp.repaint();
-				revalidate();
+				components.put(co.toString(), picLabel);
 			}
 		}
-		return true;
+		jp.repaint();
+		revalidate();
 	}
 
 	private void getDetails() {
@@ -151,16 +145,16 @@ public class GUI extends JFrame implements ActionListener {
 			JTextField nbMousesByGate = new JTextField( "Porte" + (i + 1) );
 			bottomPanel.add(nbMousesByGate);
 		}
-		JButton lancer = new JButton("Lachez les souris !!");
 		
-		lancer.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				CheeseMain.letsGo();
-			}
-			
-		});
+//		lancer.addActionListener(new ActionListener() {
+//
+//			@Override
+//			public void actionPerformed(ActionEvent arg0) {
+//				CheeseMain.letsGo();
+//			}
+//			
+//		});
+		lancer.addActionListener(this);
 		
 		bottomPanel.add(lancer);
 		bottomPanel.repaint();
@@ -180,31 +174,111 @@ public class GUI extends JFrame implements ActionListener {
 		gbc.gridy = coo.getY();
 		gbc.gridheight = 1;
 		gbc.gridwidth = 1;
-		
+
 		String img = "wall";
-		if( node.isUsed() ) {
-			img = "mouse";
-		} else {
-			if ( node != null ) {
-				img = node.getType();
+		if ( node != null ) {
+			if( node.isUsed() ) {
+				img = "mouse";
+			} else {
+//				img = node.getType();
+				img = "mouse";
 			}
 		}
-		if (graph.getDepartures().contains(coo))  
-			img = "depart";
+		
 		try {
 			BufferedImage myPicture = ImageIO.read(new File("images/" + img + ".png"));
 			JLabel picLabel = new JLabel(new ImageIcon(myPicture));
+			jp.remove(components.get(coo.toString()));
+			components.remove(coo.toString());
 			jp.add(picLabel, gbc);
-			jp.repaint();
-			revalidate();
+			components.put(coo.toString(), picLabel);
+			jp.repaint(gbc.gridx, gbc.gridy, gbc.gridx + gbc.gridwidth, gbc.gridy + gbc.gridheight);
+			jp.revalidate();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
+	public void refreshAllNode() {
+//		jp.removeAll();
+		jp.setLayout(gbl);
+		for (Map.Entry< String, GenericNode<String, Object> > node : gm.getNodes().entrySet()) {
+			Coordinates coo = node.getValue().getCoordinates();
+			gbc.gridx = coo.getX();
+			gbc.gridy = coo.getY();
+			gbc.gridheight = 1;
+			gbc.gridwidth = 1;
+			
+			String img = "wall";
+			if ( node != null ) {
+				if( node.getValue().isUsed() ) {
+					img = "mouse";
+				} else {
+					img = node.getValue().getType();
+				}
+			}
+			
+			try {
+				BufferedImage myPicture = ImageIO.read(new File("images/" + img + ".png"));
+				JLabel picLabel = new JLabel(new ImageIcon(myPicture));
+				jp.remove(components.get(coo.toString()));
+				components.remove(coo.toString());
+				jp.add(picLabel, gbc);
+				components.put(coo.toString(), picLabel);
+				jp.repaint(gbc.gridx, gbc.gridy, gbc.gridx + gbc.gridwidth, gbc.gridy + gbc.gridheight);
+				jp.revalidate();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource().equals(lancer) ) {
+			IRoundRobin<IMouse<String,Object>> rr = new RoundRobinFIFO<>();
+			
+			Set<Gate<String, Object>> departures = CheeseSettings.getGraph().getDepartures();
+
+			
+			int j = 0;
+			for(Gate<String, Object> g : departures) {
+				g.setMouseNumber(CheeseSettings.getMouseNumberForGate(j));
+				j++;
+			}
+
+			int i = 0;
+			IMouse<String,Object> m = null;
+			try {
+				do {
+					for(Gate<String, Object> gate : departures) {
+						System.out.println("in for : gate = " + gate);
+						rr.add(gate.getNewMouses());
+					}
+					System.out.println("size = " + rr.size());
+
+					
+					if(rr.size() != 0) {
+						
+						i++;
+						m = rr.next();
+						refreshNode(m.getLocation());
+						if(m.doSomething() == true) {
+							System.out.println("Mouse " + m.hashCode() + " location: " + m.getLocation());
+							rr.remove();
+						}
+						else {
+							System.out.println("Mouse " + m.hashCode() + " location: " + m.getLocation());
+						}
+						
+//						Thread.sleep(1);
+					}
+				} while(rr.size() != 0) ;
+			} catch (RoundRobinEmptyException e1) {
+				e1.printStackTrace();
+			}
+			System.out.println(i);
+		}
 	}
 	
 	public static GUI getGUI() {
@@ -218,16 +292,17 @@ public class GUI extends JFrame implements ActionListener {
 	private int width;
 	private Dimension dimension;
 	private File file;
-	private IGraph<String, Object> graph;
 	private GraphMaker gm;
 	private static GUI gui;
 	
 
-	JPanel jp 		 	   = new JPanel();
-	JPanel bottomPanel 	   = new JPanel();
-	BorderLayout bl 	   = new BorderLayout();
-	BorderLayout bl2 	   = new BorderLayout();
-	GridBagLayout gbl	   = new GridBagLayout();
-	GridBagConstraints gbc = new GridBagConstraints();
+	private JPanel jp 		 	   = new JPanel();
+	private JPanel bottomPanel 	   = new JPanel();
+	private BorderLayout bl 	   = new BorderLayout();
+	private BorderLayout bl2 	   = new BorderLayout();
+	private GridBagLayout gbl	   = new GridBagLayout();
+	private GridBagConstraints gbc = new GridBagConstraints();
+	private JButton lancer = new JButton("Lachez les souris !!");
+	private Map<String, JComponent> components = new HashMap<>();
 	
 }
