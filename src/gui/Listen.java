@@ -7,8 +7,8 @@ import javax.swing.JOptionPane;
 
 public class Listen implements WindowListener {
 	public void windowClosing(WindowEvent e){
-		int rep = JOptionPane.showConfirmDialog(null, "Sure de vouloir fermer ?");
-		if(rep == 0)
+//		int rep = JOptionPane.showConfirmDialog(null, "Sure de vouloir fermer ?");
+//		if(rep == 0)
 			System.exit(0);
 	}
 	public void windowClosed(){}
