@@ -145,13 +145,13 @@ public class GraphMaker {
 			ips.close();
 			if (graph != null && nodes != null) {
 				initGates();
-				System.out.println("begin");
-				for(Gate<String,Object> gate : graph.getDepartures())
-					System.out.println("init with0 " + gate.getCaseAround().size());
-				GraphValidator.forbidDeadlock(graph);
-				for(Gate<String,Object> gate : graph.getDepartures())
-					System.out.println(gate.getCaseAround().size());
-				System.out.println("end");
+//				System.out.println("begin");
+//				for(Gate<String,Object> gate : graph.getDepartures())
+//					System.out.println("init with0 " + gate.getCaseAround().size());
+//				GraphValidator.forbidDeadlock(graph);
+//				for(Gate<String,Object> gate : graph.getDepartures())
+//					System.out.println(gate.getCaseAround().size());
+//				System.out.println("end");
 			}
 			//getTest(test);
 		} catch (FileNotFoundException e) {

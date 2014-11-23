@@ -22,6 +22,10 @@ public class GraphValidator {
 		router.setComparator(CheeseSettings.getComparator());
 	}
 	
+	private GraphValidator() {
+		
+	}
+	
 	public static void forbidDeadlock(IGraph<String,Object> graph) {
 		
 		router.setGraph(graph);

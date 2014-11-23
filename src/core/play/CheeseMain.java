@@ -3,15 +3,17 @@ package core.play;
 
 import gui.GUI;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Set;
 
 import javax.swing.SwingUtilities;
 
 import core.dataStructure.graph.Gate;
-import core.dataStructure.graph.interfaces.IGraph;
 import core.dataStructure.roundRobin.IRoundRobin;
 import core.dataStructure.roundRobin.RoundRobinFIFO;
 import core.dataStructure.roundRobin.exceptions.RoundRobinEmptyException;
+import core.graphMaker.GraphMaker;
 
 public class CheeseMain {
 	
@@ -25,13 +27,12 @@ public class CheeseMain {
 		SwingUtilities.invokeLater(r);
 	}
 	
-	public static void letsGo(IGraph<String, Object> graph) {
+	public static void letsGo() {
 		IRoundRobin<IMouse<String,Object>> rr = new RoundRobinFIFO<>();
 		
-		Set<Gate<String, Object>> departures = graph.getDepartures();
-//		System.out.println(departures.size());
+		Set<Gate<String, Object>> departures = CheeseSettings.getGraph().getDepartures();
+
 		
-//		for(int j = 0; j < departures.size(); j++) {
 		int j = 0;
 		for(Gate<String, Object> g : departures) {
 			g.setMouseNumber(CheeseSettings.getMouseNumberForGate(j));
@@ -67,11 +68,24 @@ public class CheeseMain {
 			} while(rr.size() != 0) ;
 		} catch (RoundRobinEmptyException e) {
 			e.printStackTrace();
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
 		}
 		System.out.println(i);
+	}
+
+	public static boolean makeGraph(File file) {
+		
+		GraphMaker gm = null;
+		
+		try {
+			gm = new GraphMaker(file);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		CheeseSettings.setGraphMaker(gm);
+		CheeseSettings.setGraph(gm.getGraph());
+		
+		return gm.isWellFormed();
 	}
 	
 	

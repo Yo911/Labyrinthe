@@ -27,6 +27,7 @@ import core.dataStructure.graph.interfaces.IGraph;
 import core.dataStructure.graph.interfaces.INode;
 import core.graphMaker.GraphMaker;
 import core.play.CheeseMain;
+import core.play.CheeseSettings;
 import core.play.MoveEventData;
 
 public class GUI extends JFrame implements ActionListener {
@@ -53,7 +54,7 @@ public class GUI extends JFrame implements ActionListener {
 		JButton getFile = new JButton("choose your file");
 		
 		getFile.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				
@@ -68,16 +69,22 @@ public class GUI extends JFrame implements ActionListener {
 				if(file != null) {
 					jp.removeAll();
 					try {
-						gm = new GraphMaker(file);
-						ready = true;
-						if( drawField() ) {
-							
+						
+						boolean graphIsWellFormed = CheeseMain.makeGraph(file);
+						
+						gm = CheeseSettings.getGraphMaker();
+						graph = CheeseSettings.getGraph();
+						
+						if(graphIsWellFormed) {
+							drawField();
 							getDetails();
-						} else {
+						}
+						else {
 							jp.add(new JLabel("The file isn't good ! "));
 							jp.repaint();
 							revalidate();
 						}
+					
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -98,8 +105,7 @@ public class GUI extends JFrame implements ActionListener {
 	}
 
 	boolean drawField() throws IOException {
-		if ( !gm.isWellFormed() )
-			return false;
+
 		Map<String, GenericNode<String, Object>> nodes = gm.getNodes();
 		int lengthMax = gm.getLength();
 		int iMax = gm.getLineLength();
@@ -147,8 +153,7 @@ public class GUI extends JFrame implements ActionListener {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
-				CheeseMain.letsGo(getGraph());
+				CheeseMain.letsGo();
 			}
 			
 		});
@@ -180,7 +185,7 @@ public class GUI extends JFrame implements ActionListener {
 				img = node.getType();
 			}
 		}
-		if (gm.getGates().contains(coo))  
+		if (graph.getDepartures().contains(coo))  
 			img = "depart";
 		try {
 			BufferedImage myPicture = ImageIO.read(new File("images/" + img + ".png"));
@@ -189,7 +194,6 @@ public class GUI extends JFrame implements ActionListener {
 			jp.repaint();
 			revalidate();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -205,22 +209,14 @@ public class GUI extends JFrame implements ActionListener {
 		return gui;
 	}
 
-	public IGraph<String, Object> getGraph() {
-		return (gm == null) ? null : gm.getGraph();
-	}
-	
-	public boolean isReady() {
-		return ready;
-	}
-	
 	// composant graphique
 	private int height;
 	private int width;
 	private Dimension dimension;
 	private File file;
+	private IGraph<String, Object> graph;
 	private GraphMaker gm;
-	private boolean ready = false;
-	private volatile static GUI gui;
+	private static GUI gui;
 	
 
 	JPanel jp 		 	   = new JPanel();
