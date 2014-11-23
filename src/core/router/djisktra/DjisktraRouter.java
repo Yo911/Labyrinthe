@@ -60,9 +60,10 @@ public class DjisktraRouter<K,V> implements IRouter<K,V>{
 		}
 		
 		if(!graph.contains(start) || !graph.contains(end)) {
-			System.out.println("ok");
 			return Path.EMPTY;
 		}
+		
+		System.out.println();
 		
 		Path path = new Path(start);
 		NextStepsPriorityQueue queue = new NextStepsPriorityQueue();
@@ -70,7 +71,8 @@ public class DjisktraRouter<K,V> implements IRouter<K,V>{
 		queue.add(path);
 		try {
 			while(!queue.peek().peek().getKey().equals(end)) {
-				if(queue.getNextStep() == false) {
+				queue.getNextStep();
+				if(queue.peek() == null) {
 					return Path.EMPTY;
 				}
 			}
@@ -83,11 +85,12 @@ public class DjisktraRouter<K,V> implements IRouter<K,V>{
 
 	private class NextStepsPriorityQueue extends LinkedPriorityQueue<Path> {
 
-		private Set<INode<K,V>> markedNodes = new HashSet<INode<K,V>>();
+		private Set<INode<K,V>> unmarkedNodes = new HashSet<INode<K,V>>();
 		private Set<INode<K,V>> forbiddenNextSteps;
 		
 		public NextStepsPriorityQueue() {
 			super(comparator);
+			unmarkedNodes.addAll(graph.getNodes());
 		}
 
 		public void addForbiddenNextSteps(Set<INode<K,V>> forbiddenNextSteps) {
@@ -95,7 +98,7 @@ public class DjisktraRouter<K,V> implements IRouter<K,V>{
 		}
 
 		@SuppressWarnings("unchecked")
-		public boolean getNextStep() {
+		public void getNextStep() {
 			Path path = remove();
 			try {
 				removeMarkedNode((INode<K,V>)path.peek().getKey());
@@ -103,18 +106,17 @@ public class DjisktraRouter<K,V> implements IRouter<K,V>{
 				throw new RuntimeException("Erreur de programmation getNextStep");
 			}
 		
-			return addValidePathFrom(path);
+			addValidePathFrom(path);
 		}
 		
 		private void removeMarkedNode(INode<K,V> node) {
-			markedNodes.add(node);
+			unmarkedNodes.remove(node);
 			Iterator<Path> it = iterator();
 			while(it.hasNext()) {
 				try { 
 					Path p = it.next();
 					if(p.peek().getKey().equals(node)) {
 						it.remove();
-						break;
 					}
 				} catch (StackEmptyException e) {
 					throw new RuntimeException("Erreur de programmation removeMarkedNode");
@@ -123,8 +125,7 @@ public class DjisktraRouter<K,V> implements IRouter<K,V>{
 		}
 
 		@SuppressWarnings("unchecked")
-		public boolean addValidePathFrom(Path path) {
-			boolean haveAdd = false;
+		public void addValidePathFrom(Path path) {
 			INode<K,V> node = null;
 			try {
 				node = (INode<K,V>) path.peek().getKey();
@@ -136,16 +137,14 @@ public class DjisktraRouter<K,V> implements IRouter<K,V>{
 			Set<Entry<INode<K,V>,Integer>> Neighbours = node.getNeighBours();
 			
 			for(Entry<INode<K,V>,Integer> neighboor : Neighbours) {
-				if(!path.contains(neighboor.getKey()) && !markedNodes.contains(neighboor.getKey()) 
+				if(!path.contains(neighboor.getKey()) && unmarkedNodes.contains(neighboor.getKey()) 
 						&& (forbiddenNextSteps == null || !forbiddenNextSteps.contains(neighboor.getKey()))) {
 						newPath = path.clone();
 						newPath.add(neighboor.getKey(), neighboor.getValue());
 						add(newPath);
-						haveAdd = true;
 				}
 			}
 			forbiddenNextSteps = null;
-			return haveAdd;
 		}
 	}
 }

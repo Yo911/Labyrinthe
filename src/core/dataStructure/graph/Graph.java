@@ -49,9 +49,8 @@ public class Graph<K,V> implements IGraph<K,V> {
 		nodes.remove(key);
 	}
 
-	@SuppressWarnings("unchecked")
 	public Collection<INode<K, V>> getNodes() {
-		return (Collection<INode<K, V>>) nodes;
+		return (Collection<INode<K, V>>) nodes.values();
 	}
 	
 	public boolean contains(INode<K, V> node) {

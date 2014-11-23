@@ -20,6 +20,8 @@ public class LinkedPriorityQueue<V> implements IPriorityQueue<V> {
 	
 	public void add(V value) {
 		
+		if(value == null) return;
+		
 		ILinkSimple<V> tmp = head;
 		ILinkSimple<V> newLink = new LinkSimple<V>();
 		newLink.setValue(value);
@@ -88,10 +90,22 @@ public class LinkedPriorityQueue<V> implements IPriorityQueue<V> {
 		@Override
 		public boolean hasNext() {
 			if(morePrevious == null) {
-				return previous != null;
+				if(previous != null) {
+					return true;
+				}
+				if(init == true) {
+					iteratorHeads.remove(this);
+				}
+				return false;
 			}
 			else {
-				return previous.getNext() != null;
+				if(previous.getNext() != null) {
+					return true;
+				}
+				if(init == true) {
+					iteratorHeads.remove(this);
+				}
+				return false;
 			}
 		}
 
