@@ -14,6 +14,7 @@ import core.dataStructure.roundRobin.IRoundRobin;
 import core.dataStructure.roundRobin.RoundRobinFIFO;
 import core.dataStructure.roundRobin.exceptions.RoundRobinEmptyException;
 import core.graphMaker.GraphMaker;
+import core.graphMaker.GraphValidator;
 
 public class CheeseMain {
 	
@@ -72,7 +73,7 @@ public class CheeseMain {
 		System.out.println(i);
 	}
 
-	public static boolean makeGraph(File file) {
+	public synchronized static boolean makeGraph(File file) {
 		
 		GraphMaker gm = null;
 		
@@ -82,10 +83,18 @@ public class CheeseMain {
 			e.printStackTrace();
 		}
 		
-		CheeseSettings.setGraphMaker(gm);
-		CheeseSettings.setGraph(gm.getGraph());
+		System.out.println("dkjfqk");
 		
-		return gm.isWellFormed();
+		boolean result = gm.isWellFormed();
+		System.out.println("2222");
+		result &= (new GraphValidator()).forbidDeadlock(gm.getGraph());
+		
+		if(result == true) {
+			CheeseSettings.setGraphMaker(gm);
+			CheeseSettings.setGraph(gm.getGraph());
+		}
+		
+		return result;
 	}
 	
 	

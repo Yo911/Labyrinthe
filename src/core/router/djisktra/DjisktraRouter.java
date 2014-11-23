@@ -63,8 +63,6 @@ public class DjisktraRouter<K,V> implements IRouter<K,V>{
 			return Path.EMPTY;
 		}
 		
-		System.out.println();
-		
 		Path path = new Path(start);
 		NextStepsPriorityQueue queue = new NextStepsPriorityQueue();
 		queue.addForbiddenNextSteps(forbiddenSteps);

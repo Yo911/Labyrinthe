@@ -72,8 +72,12 @@ public class GUI extends JFrame implements ActionListener {
 						
 						boolean graphIsWellFormed = CheeseMain.makeGraph(file);
 						
+						System.out.println("je pashh");
+						
 						gm = CheeseSettings.getGraphMaker();
 						graph = CheeseSettings.getGraph();
+						
+						System.out.println("laliqushdflqkushdflqk");
 						
 						if(graphIsWellFormed) {
 							drawField();

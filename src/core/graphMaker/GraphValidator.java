@@ -15,18 +15,21 @@ import core.router.djisktra.DjisktraRouter;
 
 public class GraphValidator {
 	
-	private static IRouter<String,Object> router;
+	private IRouter<String,Object> router;
+//	
+//	static {
+//		router = new DjisktraRouter<>();
+//		router.setComparator(CheeseSettings.getComparator());
+//	}
 	
-	static {
+	public GraphValidator() {
 		router = new DjisktraRouter<>();
 		router.setComparator(CheeseSettings.getComparator());
 	}
 	
-	private GraphValidator() {
+	public boolean forbidDeadlock(IGraph<String,Object> graph) {
 		
-	}
-	
-	public static void forbidDeadlock(IGraph<String,Object> graph) {
+		boolean isValid = false;
 		
 		router.setGraph(graph);
 		
@@ -34,17 +37,20 @@ public class GraphValidator {
 		Collection<INode<String,Object>> cheeses = graph.getArrival();
 		
 		for(Gate<String,Object> gate : gates) {
-			validateGateDepartures(gate,cheeses);
+			isValid |= validateGateDepartures(gate,cheeses);
 		}
+		
+		return isValid;
 	}
 
-	private static void validateGateDepartures(Gate<String,Object> gate, Collection<INode<String, Object>> cheeses) {
+	private boolean validateGateDepartures(Gate<String,Object> gate, Collection<INode<String, Object>> cheeses) {
 		
 		Collection<INode<String,Object>> cases = gate.getCaseAround();
 		Collection<INode<String,Object>> potentialFriends;
 		Set<INode<String,Object>> checkedCases = new HashSet<>();
 		int checkedNumber = 0;
 		boolean cheeseFound;
+		boolean gateIsValid = false;
 		
 		for(INode<String,Object> depart : cases) {
 			cheeseFound = false;
@@ -52,6 +58,7 @@ public class GraphValidator {
 			for(INode<String,Object> cheese : cheeses) {
 				if(router.findRoute(depart,cheese) != Path.EMPTY) {
 					cheeseFound = true;
+					gateIsValid = true;
 					break;
 				}
 			}
@@ -75,9 +82,10 @@ public class GraphValidator {
 				break;
 			}
 		}
+		return gateIsValid;
 	}
 
-	private static int getFriendInGate(INode<String, Object> depart, Collection<INode<String, Object>> potentialFriends, int max) {
+	private int getFriendInGate(INode<String, Object> depart, Collection<INode<String, Object>> potentialFriends, int max) {
 		
 		Set<Entry<INode<String, Object>, Integer>> neighbours = depart.getNeighBours();
 		Collection<INode<String, Object>> maybeFriends;
@@ -103,7 +111,4 @@ public class GraphValidator {
 		
 		return checkedNumber;
 	}
-
-
-
 }
