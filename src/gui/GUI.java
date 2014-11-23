@@ -12,7 +12,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -23,25 +22,22 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.event.EventListenerList;
 
 import core.dataStructure.graph.Coordinates;
-import core.dataStructure.graph.Gate;
 import core.dataStructure.graph.GenericNode;
 import core.dataStructure.graph.interfaces.INode;
-import core.dataStructure.roundRobin.IRoundRobin;
-import core.dataStructure.roundRobin.RoundRobinFIFO;
-import core.dataStructure.roundRobin.exceptions.RoundRobinEmptyException;
 import core.graphMaker.GraphMaker;
 import core.play.CheeseMain;
 import core.play.CheeseSettings;
-import core.play.IMouse;
 import core.play.MoveEventData;
 
 public class GUI extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 	
-	private GUI() {
+	private GUI(MainListener listner) {
+		listeners.add(MainListener.class, listner);
 		Listen l = new Listen();
 		addWindowListener(l);
 		dimension = Toolkit.getDefaultToolkit().getScreenSize();
@@ -72,7 +68,7 @@ public class GUI extends JFrame implements ActionListener {
 					jp.removeAll();
 					try {
 						
-						boolean graphIsWellFormed = CheeseMain.makeGraph(file);
+						boolean graphIsWellFormed = fireNewGraph(file);
 						
 						if(graphIsWellFormed) {
 							gm = CheeseSettings.getGraphMaker();
@@ -146,14 +142,6 @@ public class GUI extends JFrame implements ActionListener {
 			bottomPanel.add(nbMousesByGate);
 		}
 		
-//		lancer.addActionListener(new ActionListener() {
-//
-//			@Override
-//			public void actionPerformed(ActionEvent arg0) {
-//				CheeseMain.letsGo();
-//			}
-//			
-//		});
 		lancer.addActionListener(this);
 		
 		bottomPanel.add(lancer);
@@ -180,7 +168,8 @@ public class GUI extends JFrame implements ActionListener {
 			if( node.isUsed() ) {
 				img = "mouse";
 			} else {
-				img = node.getType();
+//				img = node.getType();
+				img = "mouse";
 			}
 		}
 		
@@ -199,6 +188,7 @@ public class GUI extends JFrame implements ActionListener {
 	}
 	
 	public void refreshAllNode() {
+//		jp.removeAll();
 		jp.setLayout(gbl);
 		for (Map.Entry< String, GenericNode<String, Object> > node : gm.getNodes().entrySet()) {
 			Coordinates coo = node.getValue().getCoordinates();
@@ -230,87 +220,56 @@ public class GUI extends JFrame implements ActionListener {
 			}
 		}
 	}
-
-	private synchronized void letsGo() {
-		IRoundRobin<IMouse<String,Object>> rr = new RoundRobinFIFO<>();
-		
-		Set<Gate<String, Object>> departures = CheeseSettings.getGraph().getDepartures();
-
-		
-		int j = 0;
-		for(Gate<String, Object> g : departures) {
-			g.setMouseNumber(CheeseSettings.getMouseNumberForGate(j));
-			j++;
+	
+	public static GUI getGUI(MainListener listner) {
+		if(gui == null) {
+			gui = new GUI(listner);
 		}
-
-		int i = 0;
-		IMouse<String,Object> m = null;
-		try {
-			do {
-				for(Gate<String, Object> gate : departures) {
-					System.out.println("in for : gate = " + gate);
-					rr.add(gate.getNewMouses());
-				}
-				System.out.println("size = " + rr.size());
-
-				
-				if(rr.size() != 0) {
-					
-					i++;
-					m = rr.next();
-					refreshNode(m.getLocation());
-					Thread.sleep(1000);
-					if(m.doSomething()) {
-						System.out.println("Mouse " + m.hashCode() + " location: " + m.getLocation());
-						rr.remove();
-					}
-					else {
-						System.out.println("Mouse " + m.hashCode() + " location: " + m.getLocation());
-					}
-					
-//					Thread.sleep(1);
-				}
-			} while(rr.size() != 0) ;
-		} catch (RoundRobinEmptyException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.out.println(i);
+		return gui;
+	}
+	
+	public static GUI getGUI() {
+		return gui;
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(lancer) ) {
-			start = true;
-			letsGo();
+//			fireMainListener();
 		}
 	}
 	
-	public static GUI getGUI() {
-		if (gui == null)
-			gui = new GUI();
-		return gui;
+	private boolean fireNewGraph(File file) {
+		MainListener[] listener = this.listeners.getListeners(MainListener.class);
+		listener[0].newGraph(file);
+		synchronized(gui) {
+			try {
+				gui.wait();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return CheeseMain.isGraphValid();
 	}
-
-	private File file;
-	private GraphMaker gm;
-	private static GUI gui;
-	
-	public boolean start = false;
 
 	// composant graphique
 	private int height;
 	private int width;
 	private Dimension dimension;
+	private File file;
+	private GraphMaker gm;
+	private volatile static GUI gui;
+	private EventListenerList listeners = new EventListenerList();
+	
+
 	private JPanel jp 		 	   = new JPanel();
 	private JPanel bottomPanel 	   = new JPanel();
 	private BorderLayout bl 	   = new BorderLayout();
 	private BorderLayout bl2 	   = new BorderLayout();
 	private GridBagLayout gbl	   = new GridBagLayout();
 	private GridBagConstraints gbc = new GridBagConstraints();
-	private JButton lancer 		   = new JButton("Lachez les souris !!");
+	private JButton lancer = new JButton("Lachez les souris !!");
 	private Map<String, JComponent> components = new HashMap<>();
 	
 }

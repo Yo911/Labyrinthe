@@ -53,6 +53,9 @@ public class GraphValidator {
 		boolean gateIsValid = false;
 		
 		for(INode<String,Object> depart : cases) {
+			
+			System.out.println("checkedNumbeRR " + checkedNumber);
+			
 			cheeseFound = false;
 			
 			for(INode<String,Object> cheese : cheeses) {
@@ -71,7 +74,7 @@ public class GraphValidator {
 				potentialFriends.addAll(gate.getCaseAround());
 				potentialFriends.removeAll(checkedCases);
 				if(!potentialFriends.isEmpty()) {
-					checkedNumber += getFriendInGate(depart, potentialFriends, cases.size() - checkedNumber);
+					checkedNumber += getFriendInGate(depart, potentialFriends, gate.getCaseAround().size() - checkedNumber);
 				}
 			}
 			else {
@@ -89,14 +92,15 @@ public class GraphValidator {
 		
 		Set<Entry<INode<String, Object>, Integer>> neighbours = depart.getNeighBours();
 		Collection<INode<String, Object>> maybeFriends;
-		int checkedNumber = max;
+		int checkedNumber = 0;
 		
 		for(Entry<INode<String, Object>, Integer> neighbour : neighbours) {
+			System.out.println("checkedNumber " + checkedNumber + " for max == " + max);
 			if(potentialFriends.contains(neighbour.getKey())) {
 				
-				checkedNumber--;
+				checkedNumber++;
 				
-				if(checkedNumber == 0) {
+				if(checkedNumber == max) {
 					break;
 				}
 				
@@ -105,9 +109,9 @@ public class GraphValidator {
 				maybeFriends.remove(neighbour.getKey());
 				
 				if(!maybeFriends.isEmpty())
-					checkedNumber += getFriendInGate(neighbour.getKey(), maybeFriends, checkedNumber);
+					checkedNumber += getFriendInGate(neighbour.getKey(), maybeFriends, max - checkedNumber);
 
-				if(checkedNumber == 0) {
+				if(checkedNumber == max) {
 					break;
 				}
 			}
