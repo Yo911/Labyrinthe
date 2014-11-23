@@ -180,8 +180,7 @@ public class GUI extends JFrame implements ActionListener {
 			if( node.isUsed() ) {
 				img = "mouse";
 			} else {
-//				img = node.getType();
-				img = "mouse";
+				img = node.getType();
 			}
 		}
 		
@@ -200,7 +199,6 @@ public class GUI extends JFrame implements ActionListener {
 	}
 	
 	public void refreshAllNode() {
-//		jp.removeAll();
 		jp.setLayout(gbl);
 		for (Map.Entry< String, GenericNode<String, Object> > node : gm.getNodes().entrySet()) {
 			Coordinates coo = node.getValue().getCoordinates();
@@ -232,52 +230,61 @@ public class GUI extends JFrame implements ActionListener {
 			}
 		}
 	}
+
+	private synchronized void letsGo() {
+		IRoundRobin<IMouse<String,Object>> rr = new RoundRobinFIFO<>();
+		
+		Set<Gate<String, Object>> departures = CheeseSettings.getGraph().getDepartures();
+
+		
+		int j = 0;
+		for(Gate<String, Object> g : departures) {
+			g.setMouseNumber(CheeseSettings.getMouseNumberForGate(j));
+			j++;
+		}
+
+		int i = 0;
+		IMouse<String,Object> m = null;
+		try {
+			do {
+				for(Gate<String, Object> gate : departures) {
+					System.out.println("in for : gate = " + gate);
+					rr.add(gate.getNewMouses());
+				}
+				System.out.println("size = " + rr.size());
+
+				
+				if(rr.size() != 0) {
+					
+					i++;
+					m = rr.next();
+					refreshNode(m.getLocation());
+					Thread.sleep(1000);
+					if(m.doSomething()) {
+						System.out.println("Mouse " + m.hashCode() + " location: " + m.getLocation());
+						rr.remove();
+					}
+					else {
+						System.out.println("Mouse " + m.hashCode() + " location: " + m.getLocation());
+					}
+					
+//					Thread.sleep(1);
+				}
+			} while(rr.size() != 0) ;
+		} catch (RoundRobinEmptyException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println(i);
+	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(lancer) ) {
-			IRoundRobin<IMouse<String,Object>> rr = new RoundRobinFIFO<>();
-			
-			Set<Gate<String, Object>> departures = CheeseSettings.getGraph().getDepartures();
-
-			
-			int j = 0;
-			for(Gate<String, Object> g : departures) {
-				g.setMouseNumber(CheeseSettings.getMouseNumberForGate(j));
-				j++;
-			}
-
-			int i = 0;
-			IMouse<String,Object> m = null;
-			try {
-				do {
-					for(Gate<String, Object> gate : departures) {
-						System.out.println("in for : gate = " + gate);
-						rr.add(gate.getNewMouses());
-					}
-					System.out.println("size = " + rr.size());
-
-					
-					if(rr.size() != 0) {
-						
-						i++;
-						m = rr.next();
-						refreshNode(m.getLocation());
-						if(m.doSomething() == true) {
-							System.out.println("Mouse " + m.hashCode() + " location: " + m.getLocation());
-							rr.remove();
-						}
-						else {
-							System.out.println("Mouse " + m.hashCode() + " location: " + m.getLocation());
-						}
-						
-//						Thread.sleep(1);
-					}
-				} while(rr.size() != 0) ;
-			} catch (RoundRobinEmptyException e1) {
-				e1.printStackTrace();
-			}
-			System.out.println(i);
+			start = true;
+			letsGo();
 		}
 	}
 	
@@ -287,22 +294,23 @@ public class GUI extends JFrame implements ActionListener {
 		return gui;
 	}
 
-	// composant graphique
-	private int height;
-	private int width;
-	private Dimension dimension;
 	private File file;
 	private GraphMaker gm;
 	private static GUI gui;
 	
+	public boolean start = false;
 
+	// composant graphique
+	private int height;
+	private int width;
+	private Dimension dimension;
 	private JPanel jp 		 	   = new JPanel();
 	private JPanel bottomPanel 	   = new JPanel();
 	private BorderLayout bl 	   = new BorderLayout();
 	private BorderLayout bl2 	   = new BorderLayout();
 	private GridBagLayout gbl	   = new GridBagLayout();
 	private GridBagConstraints gbc = new GridBagConstraints();
-	private JButton lancer = new JButton("Lachez les souris !!");
+	private JButton lancer 		   = new JButton("Lachez les souris !!");
 	private Map<String, JComponent> components = new HashMap<>();
 	
 }

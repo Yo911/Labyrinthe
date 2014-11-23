@@ -3,8 +3,6 @@ package gui;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-import javax.swing.JOptionPane;
-
 public class Listen implements WindowListener {
 	public void windowClosing(WindowEvent e){
 //		int rep = JOptionPane.showConfirmDialog(null, "Sure de vouloir fermer ?");

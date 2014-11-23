@@ -89,14 +89,14 @@ public class GraphValidator {
 		
 		Set<Entry<INode<String, Object>, Integer>> neighbours = depart.getNeighBours();
 		Collection<INode<String, Object>> maybeFriends;
-		int checkedNumber = 0;
+		int checkedNumber = max;
 		
 		for(Entry<INode<String, Object>, Integer> neighbour : neighbours) {
 			if(potentialFriends.contains(neighbour.getKey())) {
 				
-				checkedNumber++;
+				checkedNumber--;
 				
-				if(checkedNumber == max) {
+				if(checkedNumber == 0) {
 					break;
 				}
 				
@@ -105,9 +105,9 @@ public class GraphValidator {
 				maybeFriends.remove(neighbour.getKey());
 				
 				if(!maybeFriends.isEmpty())
-					checkedNumber += getFriendInGate(neighbour.getKey(), maybeFriends, max - 1);
+					checkedNumber += getFriendInGate(neighbour.getKey(), maybeFriends, checkedNumber);
 
-				if(checkedNumber == max) {
+				if(checkedNumber == 0) {
 					break;
 				}
 			}

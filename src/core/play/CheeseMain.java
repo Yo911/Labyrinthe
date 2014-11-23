@@ -18,16 +18,12 @@ import core.graphMaker.GraphValidator;
 
 public class CheeseMain {
 	
-	public static void main(String[] args) {
-		
-		Runnable r = new Runnable(){
-			public void run(){
-				GUI.getGUI();
-			}
-		};
-		SwingUtilities.invokeLater(r);
-	}
+	private static GUI gui;
 	
+	public static void main(String[] args) {
+		gui = GUI.getGUI();
+	}
+
 	public static void letsGo() {
 		IRoundRobin<IMouse<String,Object>> rr = new RoundRobinFIFO<>();
 		
