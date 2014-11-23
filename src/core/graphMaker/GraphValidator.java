@@ -106,6 +106,10 @@ public class GraphValidator {
 				
 				if(!maybeFriends.isEmpty())
 					checkedNumber += getFriendInGate(neighbour.getKey(), maybeFriends, max - 1);
+
+				if(checkedNumber == max) {
+					break;
+				}
 			}
 		}
 		
