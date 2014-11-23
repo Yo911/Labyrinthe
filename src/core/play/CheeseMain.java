@@ -2,6 +2,7 @@ package core.play;
 
 
 import gui.GUI;
+import gui.MainListener;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,14 +19,28 @@ import core.graphMaker.GraphValidator;
 
 public class CheeseMain {
 	
+	private static final MainListener mainListener = new MainListener();
+	private static boolean graphIsValid;
+	
 	public static void main(String[] args) {
 		
 		Runnable r = new Runnable(){
 			public void run(){
-				GUI.getGUI();
+				GUI.getGUI(mainListener);
 			}
 		};
 		SwingUtilities.invokeLater(r);
+		
+		while(true) {
+			
+			mainListener.fireEvents();
+			
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				break;
+			}
+		}
 	}
 	
 	public static void letsGo() {
@@ -64,16 +79,15 @@ public class CheeseMain {
 						System.out.println("Mouse " + m.hashCode() + " location: " + m.getLocation());
 					}
 					
-//					Thread.sleep(1);
+					
+						Thread.sleep(mainListener.getWaitingTime());
 				}
 			} while(rr.size() != 0) ;
-		} catch (RoundRobinEmptyException e) {
-			e.printStackTrace();
-		}
+		} catch (RoundRobinEmptyException | InterruptedException e) {}
 		System.out.println(i);
 	}
 
-	public static boolean makeGraph(File file) {
+	public static void makeGraph(File file) {
 		
 		GraphMaker gm = null;
 		
@@ -83,15 +97,14 @@ public class CheeseMain {
 			e.printStackTrace();
 		}
 		
-		boolean result = gm.isWellFormed() && (new GraphValidator()).forbidDeadlock(gm.getGraph()) ;
-		if(result == true) {
+		graphIsValid = gm.isWellFormed() && (new GraphValidator()).forbidDeadlock(gm.getGraph()) ;
+		if(graphIsValid == true) {
 			CheeseSettings.setGraphMaker(gm);
 			CheeseSettings.setGraph(gm.getGraph());
 		}
-		
-		return result;
 	}
-	
-	
 
+	public static boolean isGraphValid() {
+		return CheeseMain.graphIsValid;
+	}
 }

@@ -12,7 +12,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -23,25 +22,22 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.event.EventListenerList;
 
 import core.dataStructure.graph.Coordinates;
-import core.dataStructure.graph.Gate;
 import core.dataStructure.graph.GenericNode;
 import core.dataStructure.graph.interfaces.INode;
-import core.dataStructure.roundRobin.IRoundRobin;
-import core.dataStructure.roundRobin.RoundRobinFIFO;
-import core.dataStructure.roundRobin.exceptions.RoundRobinEmptyException;
 import core.graphMaker.GraphMaker;
 import core.play.CheeseMain;
 import core.play.CheeseSettings;
-import core.play.IMouse;
 import core.play.MoveEventData;
 
 public class GUI extends JFrame implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 	
-	private GUI() {
+	private GUI(MainListener listner) {
+		listeners.add(MainListener.class, listner);
 		Listen l = new Listen();
 		addWindowListener(l);
 		dimension = Toolkit.getDefaultToolkit().getScreenSize();
@@ -72,7 +68,7 @@ public class GUI extends JFrame implements ActionListener {
 					jp.removeAll();
 					try {
 						
-						boolean graphIsWellFormed = CheeseMain.makeGraph(file);
+						boolean graphIsWellFormed = fireNewGraph(file);
 						
 						if(graphIsWellFormed) {
 							gm = CheeseSettings.getGraphMaker();
@@ -146,14 +142,6 @@ public class GUI extends JFrame implements ActionListener {
 			bottomPanel.add(nbMousesByGate);
 		}
 		
-//		lancer.addActionListener(new ActionListener() {
-//
-//			@Override
-//			public void actionPerformed(ActionEvent arg0) {
-//				CheeseMain.letsGo();
-//			}
-//			
-//		});
 		lancer.addActionListener(this);
 		
 		bottomPanel.add(lancer);
@@ -233,58 +221,36 @@ public class GUI extends JFrame implements ActionListener {
 		}
 	}
 	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if (e.getSource().equals(lancer) ) {
-			IRoundRobin<IMouse<String,Object>> rr = new RoundRobinFIFO<>();
-			
-			Set<Gate<String, Object>> departures = CheeseSettings.getGraph().getDepartures();
-
-			
-			int j = 0;
-			for(Gate<String, Object> g : departures) {
-				g.setMouseNumber(CheeseSettings.getMouseNumberForGate(j));
-				j++;
-			}
-
-			int i = 0;
-			IMouse<String,Object> m = null;
-			try {
-				do {
-					for(Gate<String, Object> gate : departures) {
-						System.out.println("in for : gate = " + gate);
-						rr.add(gate.getNewMouses());
-					}
-					System.out.println("size = " + rr.size());
-
-					
-					if(rr.size() != 0) {
-						
-						i++;
-						m = rr.next();
-						refreshNode(m.getLocation());
-						if(m.doSomething() == true) {
-							System.out.println("Mouse " + m.hashCode() + " location: " + m.getLocation());
-							rr.remove();
-						}
-						else {
-							System.out.println("Mouse " + m.hashCode() + " location: " + m.getLocation());
-						}
-						
-//						Thread.sleep(1);
-					}
-				} while(rr.size() != 0) ;
-			} catch (RoundRobinEmptyException e1) {
-				e1.printStackTrace();
-			}
-			System.out.println(i);
+	public static GUI getGUI(MainListener listner) {
+		if(gui == null) {
+			gui = new GUI(listner);
 		}
+		return gui;
 	}
 	
 	public static GUI getGUI() {
-		if (gui == null)
-			gui = new GUI();
 		return gui;
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource().equals(lancer) ) {
+//			fireMainListener();
+		}
+	}
+	
+	private boolean fireNewGraph(File file) {
+		MainListener[] listener = this.listeners.getListeners(MainListener.class);
+		listener[0].newGraph(file);
+		synchronized(gui) {
+			try {
+				gui.wait();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return CheeseMain.isGraphValid();
 	}
 
 	// composant graphique
@@ -293,7 +259,8 @@ public class GUI extends JFrame implements ActionListener {
 	private Dimension dimension;
 	private File file;
 	private GraphMaker gm;
-	private static GUI gui;
+	private volatile static GUI gui;
+	private EventListenerList listeners = new EventListenerList();
 	
 
 	private JPanel jp 		 	   = new JPanel();
