@@ -141,9 +141,8 @@ public class Mouse<K,V> implements IMouse<K,V> {
 
 	@SuppressWarnings("unchecked")
 	private boolean goForward() {
+		INode<?,?> oldLocation = this.location;
 		try {
-			
-			INode<?,?> oldLocation = this.location;
 			Entry<INode<?,?>, Integer> newLocation = route.pop();
 			setLocation((INode<K, V>) newLocation.getKey(),newLocation.getValue());
 			route.peek(); // Si on est arrivé au fromage une exception est levée;
@@ -151,7 +150,7 @@ public class Mouse<K,V> implements IMouse<K,V> {
 			
 		} catch (StackEmptyException e) {
 			leaveLocation();
-			notifyMove(new MoveEventData(getLocation(),null));
+			notifyMove(new MoveEventData(oldLocation,null));
 			return true;
 		}
 		return false;

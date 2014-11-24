@@ -3,14 +3,14 @@ package gui;
 import java.io.File;
 import java.util.Comparator;
 import java.util.EventListener;
-import java.util.Iterator;
 
 import core.dataStructure.queue.priority.LinkedPriorityQueue;
 import core.play.CheeseMain;
 
 public class MainListener implements EventListener {
 
-	private long waitingTime = 100;
+	private long waitingTime = 50;
+	private GUI gui;
 
 	private volatile LinkedPriorityQueue<EventContext> eventQueue = new LinkedPriorityQueue<>( new Comparator<EventContext>() {
 		@Override
@@ -85,6 +85,10 @@ public class MainListener implements EventListener {
 		}
 	}
 	
+	public void setGui(GUI gui) {
+		this.gui = gui;
+	}
+	
 	private static enum event {
 	    LAUNCH, NEW_GRAPH, SET_MOUSE, TIME_CHANGE
 	}
@@ -110,10 +114,12 @@ public class MainListener implements EventListener {
 	}
 
 	public void fireEvents() {
-		Iterator<EventContext> it = eventQueue.iterator();
-		while(it.hasNext()) {
-			fire(it.next());
-			it.remove();
+		EventContext e;
+		while(true) {
+			e = eventQueue.remove();
+			if(e == null)
+				break;
+			fire(e);
 		}
 	}
 
@@ -124,6 +130,9 @@ public class MainListener implements EventListener {
 				break;
 			case NEW_GRAPH:
 					CheeseMain.makeGraph(((SettingNewFileGraph)e.getData()).getFile());
+					synchronized(gui) {
+						gui.notify();
+					}
 				break;
 			case SET_MOUSE:	
 				break;

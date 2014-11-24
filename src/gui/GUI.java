@@ -150,8 +150,12 @@ public class GUI extends JFrame implements ActionListener {
 	}
 	
 	public void refresh(MoveEventData med) {
-		if( med.getNodeLeaved() != null )
+		if( med.getNodeLeaved() != null ) {
+			if(med.getNewNode() == null) {
+				System.out.println("la");
+			}
 			refreshNode(med.getNodeLeaved());
+		}
 		if( med.getNewNode() != null )
 			refreshNode(med.getNewNode());
 	}
@@ -168,8 +172,7 @@ public class GUI extends JFrame implements ActionListener {
 			if( node.isUsed() ) {
 				img = "mouse";
 			} else {
-//				img = node.getType();
-				img = "mouse";
+				img = node.getType();
 			}
 		}
 		
@@ -188,7 +191,7 @@ public class GUI extends JFrame implements ActionListener {
 	}
 	
 	public void refreshAllNode() {
-//		jp.removeAll();
+		jp.removeAll();
 		jp.setLayout(gbl);
 		for (Map.Entry< String, GenericNode<String, Object> > node : gm.getNodes().entrySet()) {
 			Coordinates coo = node.getValue().getCoordinates();
@@ -221,9 +224,10 @@ public class GUI extends JFrame implements ActionListener {
 		}
 	}
 	
-	public static GUI getGUI(MainListener listner) {
+	public static GUI getGUI(MainListener listener) {
 		if(gui == null) {
-			gui = new GUI(listner);
+			gui = new GUI(listener);
+			listener.setGui(gui);
 		}
 		return gui;
 	}
@@ -235,10 +239,15 @@ public class GUI extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(lancer) ) {
-//			fireMainListener();
+			fireLlaunch();
 		}
 	}
 	
+	private void fireLlaunch() {
+		MainListener[] listener = this.listeners.getListeners(MainListener.class);
+		listener[0].launchMouses();
+	}
+
 	private boolean fireNewGraph(File file) {
 		MainListener[] listener = this.listeners.getListeners(MainListener.class);
 		listener[0].newGraph(file);
@@ -246,7 +255,6 @@ public class GUI extends JFrame implements ActionListener {
 			try {
 				gui.wait();
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
