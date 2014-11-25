@@ -65,25 +65,17 @@ public class GraphValidator {
 					gateIsValid = true;
 					break;
 				}
-			}	
-
-			checkedNumber++;
-			
-			if(checkedNumber == max) {
-				break;
 			}
 			
 			c = getFriendsInGate(depart,cases);
-			checkedNumber += c.size() - 1;
+			checkedNumber += c.size();
 			checkedCases.addAll(c);
 			
 			if(cheeseFound == false) {
-				
 				if(max == c.size()) {
 					gate.unvalidateGate();
-					break;
 				}
-				
+
 				for(INode<String, Object> n : c) {
 					gate.unvalidate(n);
 				}
