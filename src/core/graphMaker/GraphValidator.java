@@ -2,7 +2,9 @@ package core.graphMaker;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
 import core.dataStructure.graph.Gate;
@@ -15,19 +17,14 @@ import core.router.djisktra.DjisktraRouter;
 
 public class GraphValidator {
 	
-	private IRouter<String,Object> router;
-//	
-//	static {
-//		router = new DjisktraRouter<>();
-//		router.setComparator(CheeseSettings.getComparator());
-//	}
+	private static IRouter<String,Object> router;
 	
-	public GraphValidator() {
+	static {
 		router = new DjisktraRouter<>();
 		router.setComparator(CheeseSettings.getComparator());
 	}
 	
-	public boolean forbidDeadlock(IGraph<String,Object> graph) {
+	public static boolean forbidDeadlock(IGraph<String,Object> graph) {
 		
 		boolean isValid = false;
 		
@@ -42,19 +39,23 @@ public class GraphValidator {
 		
 		return isValid;
 	}
+	
 
-	private boolean validateGateDepartures(Gate<String,Object> gate, Collection<INode<String, Object>> cheeses) {
+	private static boolean validateGateDepartures(Gate<String,Object> gate, Collection<INode<String, Object>> cheeses) {
 		
 		Collection<INode<String,Object>> cases = gate.getCaseAround();
-		Collection<INode<String,Object>> potentialFriends;
+		Collection<INode<String,Object>> c;
 		Set<INode<String,Object>> checkedCases = new HashSet<>();
 		int checkedNumber = 0;
 		boolean cheeseFound;
 		boolean gateIsValid = false;
+		int max = cases.size();
 		
 		for(INode<String,Object> depart : cases) {
 			
-			System.out.println("checkedNumbeRR " + checkedNumber);
+			if(checkedCases.contains(depart)) {
+				continue;
+			}
 			
 			cheeseFound = false;
 			
@@ -64,59 +65,66 @@ public class GraphValidator {
 					gateIsValid = true;
 					break;
 				}
-			}
-			
-			checkedCases.add(depart);
+			}	
+
 			checkedNumber++;
 			
-			if(cheeseFound == true) {
-				potentialFriends = new HashSet<>();
-				potentialFriends.addAll(gate.getCaseAround());
-				potentialFriends.removeAll(checkedCases);
-				if(!potentialFriends.isEmpty()) {
-					checkedNumber += getFriendInGate(depart, potentialFriends, gate.getCaseAround().size() - checkedNumber);
-				}
-			}
-			else {
-				gate.unvalidate(depart);
+			if(checkedNumber == max) {
+				break;
 			}
 			
-			if(checkedNumber == cases.size()) {
+			c = getFriendsInGate(depart,cases);
+			checkedNumber += c.size() - 1;
+			checkedCases.addAll(c);
+			
+			if(cheeseFound == false) {
+				
+				if(max == c.size()) {
+					gate.unvalidateGate();
+					break;
+				}
+				
+				for(INode<String, Object> n : c) {
+					gate.unvalidate(n);
+				}
+			}
+			
+			if(checkedNumber == max) {
 				break;
 			}
 		}
+		
 		return gateIsValid;
 	}
 
-	private int getFriendInGate(INode<String, Object> depart, Collection<INode<String, Object>> potentialFriends, int max) {
+	
+	private static Collection<INode<String, Object>> getFriendsInGate(INode<String, Object> caseChecked, Collection<INode<String, Object>> potentialFriends) {
 		
-		Set<Entry<INode<String, Object>, Integer>> neighbours = depart.getNeighBours();
-		Collection<INode<String, Object>> maybeFriends;
-		int checkedNumber = 0;
+		Set<INode<String,Object>> validateOnes = new HashSet<>();
+		Set<INode<String,Object>> casesToCheck = new HashSet<>();
+		Set<Entry<INode<String, Object>, Integer>> neighbours = new HashSet<>();
+		Iterator<INode<String, Object>> it;
+		INode<String, Object> tmp;
 		
-		for(Entry<INode<String, Object>, Integer> neighbour : neighbours) {
-			System.out.println("checkedNumber " + checkedNumber + " for max == " + max);
-			if(potentialFriends.contains(neighbour.getKey())) {
-				
-				checkedNumber++;
-				
-				if(checkedNumber == max) {
-					break;
-				}
-				
-				maybeFriends = new HashSet<>();
-				maybeFriends.addAll(potentialFriends);
-				maybeFriends.remove(neighbour.getKey());
-				
-				if(!maybeFriends.isEmpty())
-					checkedNumber += getFriendInGate(neighbour.getKey(), maybeFriends, max - checkedNumber);
-
-				if(checkedNumber == max) {
-					break;
+		do {
+			neighbours = caseChecked.getNeighBours();
+			for(Entry<INode<String, Object>, Integer> maybeFriend : neighbours) {
+				tmp = maybeFriend.getKey();
+				if(potentialFriends.contains(tmp) && !validateOnes.contains(tmp)) {
+					casesToCheck.add(tmp);
 				}
 			}
-		}
+			validateOnes.add(caseChecked);
+			it = casesToCheck.iterator();
+			try {
+				caseChecked = it.next();
+				it.remove();
+			}
+			catch(NoSuchElementException e) {
+				break;
+			}
+		} while(true);
 		
-		return checkedNumber;
+		return validateOnes;
 	}
 }

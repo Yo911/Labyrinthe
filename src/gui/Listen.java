@@ -3,7 +3,7 @@ package gui;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-import javax.swing.JOptionPane;
+//import javax.swing.JOptionPane;
 
 public class Listen implements WindowListener {
 	public void windowClosing(WindowEvent e){

@@ -61,7 +61,8 @@ public class CheeseMain {
 			do {
 				for(Gate<String, Object> gate : departures) {
 					System.out.println("in for : gate = " + gate);
-					rr.add(gate.getNewMouses());
+;					Set<IMouse<String, Object>> n = gate.getNewMouses();
+					rr.add(n);
 				}
 				System.out.println("size = " + rr.size());
 
@@ -97,7 +98,7 @@ public class CheeseMain {
 			e.printStackTrace();
 		}
 		
-		graphIsValid = gm.isWellFormed() && (new GraphValidator()).forbidDeadlock(gm.getGraph()) ;
+		graphIsValid = gm.isWellFormed() && GraphValidator.forbidDeadlock(gm.getGraph()) ;
 		if(graphIsValid == true) {
 			CheeseSettings.setGraphMaker(gm);
 			CheeseSettings.setGraph(gm.getGraph());

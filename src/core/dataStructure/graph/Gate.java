@@ -13,6 +13,7 @@ public class Gate<K,V> {
 	private Set<INode<K,V>> departures;
 	private int mouseNumber;
 	private IGraph<K,V> graph;
+	private boolean valid = true;
 	
 	public Gate(Set<INode<K,V>> departures, IGraph<K,V> graph) {
 		this.departures = departures;
@@ -29,7 +30,7 @@ public class Gate<K,V> {
 	}
 	
 	public Set<IMouse<K,V>> getNewMouses() {
-		if(this.mouseNumber <= 0) return null; //On ne peut plus créer de soucis par cette porte
+		if(valid == false || this.mouseNumber <= 0) return null; //On ne peut plus créer de soucis par cette porte
 		System.out.println("in get new mouse : " + departures.size());
 		Set<IMouse<K,V>> newMouses = null;
 		for(INode<K,V> departure : departures) {
@@ -47,6 +48,10 @@ public class Gate<K,V> {
 	}
 
 	public void unvalidate(INode<K,V> depart) {
-		departures.remove(depart);
+		depart.setUsed(true);
+	}
+
+	public void unvalidateGate() {
+		this.valid = false;
 	}
 }
