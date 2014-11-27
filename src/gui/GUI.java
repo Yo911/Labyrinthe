@@ -87,14 +87,11 @@ public class GUI extends JFrame implements ActionListener {
 				}
 			}
 		});
-		JPanel north = new JPanel();
-		north.setLayout(bl2);
-		north.add( getFile, 	BorderLayout.CENTER );
-		add( 	   bottomPanel, BorderLayout.SOUTH  );
-		
-		add(	   north, 		BorderLayout.NORTH  );
-		add( 	   jp,      	BorderLayout.CENTER );
+		add( bottomPanel, BorderLayout.SOUTH  );
+		add( getFile	, BorderLayout.NORTH  );
+		add( jp			, BorderLayout.CENTER );
 		setLocationRelativeTo(null);
+		setLocation(10, 10);
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		pack();
 		setVisible(true);
@@ -274,7 +271,6 @@ public class GUI extends JFrame implements ActionListener {
 	private JPanel jp 		 	   = new JPanel();
 	private JPanel bottomPanel 	   = new JPanel();
 	private BorderLayout bl 	   = new BorderLayout();
-	private BorderLayout bl2 	   = new BorderLayout();
 	private GridBagLayout gbl	   = new GridBagLayout();
 	private GridBagConstraints gbc = new GridBagConstraints();
 	private JButton lancer = new JButton("Lachez les souris !!");

@@ -84,7 +84,8 @@ public class Mouse<K,V> implements IMouse<K,V> {
 	
 	private void getNewRoute(Set<INode<K,V>> forbiddenNextSteps) {
 		Path path = router.findRoute((INode<K,V>)location, (INode<K,V>)cheese, forbiddenNextSteps);
-		this.route = orderRoute(path);
+		if( path != null)
+			this.route = orderRoute(path);
 	}
 	
 	public Set<INode<K,V>> getForbiddenNextSteps() {
