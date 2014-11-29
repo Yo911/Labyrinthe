@@ -65,11 +65,14 @@ public class Mouse<K,V> implements IMouse<K,V> {
 		return location;
 	}
 	
-	public void setLocation(INode<K,V> location, int cost) {
+	public boolean setLocation(INode<K,V> location, int cost) {
+		if( location.isUsed() )
+			return false;
 		leaveLocation();
 		this.location = location;
 		this.counter = cost;
 		settleOnLocation();
+		return true;
 	}
 
 	private void leaveLocation() {
@@ -144,10 +147,12 @@ public class Mouse<K,V> implements IMouse<K,V> {
 	private boolean goForward() {
 		INode<?,?> oldLocation = this.location;
 		try {
-			Entry<INode<?,?>, Integer> newLocation = route.pop();
-			setLocation((INode<K, V>) newLocation.getKey(),newLocation.getValue());
-			route.peek(); // Si on est arrivé au fromage une exception est levée;
-			notifyMove(new MoveEventData(oldLocation, newLocation.getKey()));
+			Entry<INode<?,?>, Integer> newLocation = route.peek();
+			if( setLocation((INode<K, V>) newLocation.getKey(),newLocation.getValue()) ) {
+				route.pop();
+				route.peek(); // Si on est arrivé au fromage une exception est levée;
+				notifyMove(new MoveEventData(oldLocation, newLocation.getKey()));
+			}
 			
 		} catch (StackEmptyException e) {
 			leaveLocation();
