@@ -118,7 +118,7 @@ public class Mouse<K,V> implements IMouse<K,V> {
 		
 		Set<INode<K,V>> forbiddenNextSteps = getForbiddenNextSteps();
 		
-		if(counter > 1 || canMove == false) {
+		if( !canMove || counter > 1 ) {
 			stay();
 			return false;
 		}
@@ -152,6 +152,8 @@ public class Mouse<K,V> implements IMouse<K,V> {
 				route.pop();
 				route.peek(); // Si on est arrivé au fromage une exception est levée;
 				notifyMove(new MoveEventData(oldLocation, newLocation.getKey()));
+			} else {
+				stay();
 			}
 			
 		} catch (StackEmptyException e) {

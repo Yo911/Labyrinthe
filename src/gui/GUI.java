@@ -87,8 +87,10 @@ public class GUI extends JFrame implements ActionListener {
 				}
 			}
 		});
+		JPanel north = new JPanel();
+		north.add(getFile);
 		add( bottomPanel, BorderLayout.SOUTH  );
-		add( getFile	, BorderLayout.NORTH  );
+		add( north	, BorderLayout.NORTH  );
 		add( jp			, BorderLayout.CENTER );
 		setLocationRelativeTo(null);
 		setLocation(10, 10);
