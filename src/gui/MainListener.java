@@ -123,6 +123,10 @@ public class MainListener implements EventListener {
 		eventQueue.add(new EventContext(event.NEW_GRAPH, new SettingNewFileGraph(file,gatesGroupPanel)));
 	}
 	
+	public void newGraph(File file) {
+		eventQueue.add(new EventContext(event.NEW_GRAPH, new SettingNewFileGraph(file,null)));
+	}
+	
 	public void setMouseNumberForGate(int i, int number) {
 		eventQueue.add(new EventContext(event.SET_MOUSE, new SettingMouseNumberData(i,number)));
 	}
@@ -152,7 +156,7 @@ public class MainListener implements EventListener {
 				break;
 			case NEW_GRAPH:
 					CheeseMain.makeGraph(((SettingNewFileGraph)e.getData()).getFile());
-					CheeseMain.connectGateConfiguratorPanels(((SettingNewFileGraph)e.getData()).getGatesGroupPanel());
+					//CheeseMain.connectGateConfiguratorPanels(((SettingNewFileGraph)e.getData()).getGatesGroupPanel());
 					synchronized(gui) {
 						gui.notify();
 					}
