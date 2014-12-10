@@ -65,11 +65,14 @@ public class Mouse<K,V> implements IMouse<K,V> {
 		return location;
 	}
 	
-	public void setLocation(INode<K,V> location, int cost) {
+	public boolean setLocation(INode<K,V> location, int cost) {
+		if( location.isUsed() )
+			return false;
 		leaveLocation();
 		this.location = location;
 		this.counter = cost;
 		settleOnLocation();
+		return true;
 	}
 
 	private void leaveLocation() {
@@ -84,7 +87,8 @@ public class Mouse<K,V> implements IMouse<K,V> {
 	
 	private void getNewRoute(Set<INode<K,V>> forbiddenNextSteps) {
 		Path path = router.findRoute((INode<K,V>)location, (INode<K,V>)cheese, forbiddenNextSteps);
-		this.route = orderRoute(path);
+		if( path != null)
+			this.route = orderRoute(path);
 	}
 	
 	public Set<INode<K,V>> getForbiddenNextSteps() {
@@ -114,7 +118,7 @@ public class Mouse<K,V> implements IMouse<K,V> {
 		
 		Set<INode<K,V>> forbiddenNextSteps = getForbiddenNextSteps();
 		
-		if(counter > 1 || canMove == false) {
+		if( !canMove || counter > 1 ) {
 			stay();
 			return false;
 		}
@@ -143,10 +147,14 @@ public class Mouse<K,V> implements IMouse<K,V> {
 	private boolean goForward() {
 		INode<?,?> oldLocation = this.location;
 		try {
-			Entry<INode<?,?>, Integer> newLocation = route.pop();
-			setLocation((INode<K, V>) newLocation.getKey(),newLocation.getValue());
-			route.peek(); // Si on est arrivé au fromage une exception est levée;
-			notifyMove(new MoveEventData(oldLocation, newLocation.getKey()));
+			Entry<INode<?,?>, Integer> newLocation = route.peek();
+			if( setLocation((INode<K, V>) newLocation.getKey(),newLocation.getValue()) ) {
+				route.pop();
+				route.peek(); // Si on est arrivé au fromage une exception est levée;
+				notifyMove(new MoveEventData(oldLocation, newLocation.getKey()));
+			} else {
+				stay();
+			}
 			
 		} catch (StackEmptyException e) {
 			leaveLocation();
