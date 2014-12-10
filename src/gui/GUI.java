@@ -43,8 +43,8 @@ public class GUI extends JFrame implements ActionListener {
 		dimension = Toolkit.getDefaultToolkit().getScreenSize();
 		height = (int) dimension.getHeight() / 2;
 		width = (int) dimension.getWidth() / 2;
-		height = 700;
-		width = 1500;
+//		height = 700;
+//		width = 1500;
 		setPreferredSize(new Dimension(width, height));
 		setLocation(1, 1);
 		setTitle("PITITE SOURIS !! ");

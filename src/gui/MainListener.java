@@ -1,8 +1,11 @@
 package gui;
 
+import gui.GatesGroupPanel.GateConfiguratorPanel;
+
 import java.io.File;
 import java.util.Comparator;
 import java.util.EventListener;
+import java.util.Set;
 
 import core.dataStructure.queue.priority.LinkedPriorityQueue;
 import core.play.CheeseMain;
@@ -75,13 +78,32 @@ public class MainListener implements EventListener {
 	
 	class SettingNewFileGraph implements EventData {
 		private File file;
+		private GatesGroupPanel gatesGroupPanel;
 		
-		private SettingNewFileGraph(File file) {
+		private SettingNewFileGraph(File file, GatesGroupPanel gatesGroupPanel) {
 			this.file = file;
+			this.gatesGroupPanel = gatesGroupPanel;
 		}
 		
 		public File getFile() {
 			return this.file;
+		}
+		
+		public GatesGroupPanel getGatesGroupPanel() {
+			return this.gatesGroupPanel;
+		}
+	}
+	
+	class ConfiguratorsConnectionData implements EventData {
+		
+		private Set<GateConfiguratorPanel> gateConfiguratorPanels;
+		
+		private ConfiguratorsConnectionData(Set<GateConfiguratorPanel> data) {
+			this.gateConfiguratorPanels = data;
+		}
+		
+		public Set<GateConfiguratorPanel> getGateConfiguratorPanels() {
+			return this.gateConfiguratorPanels;
 		}
 	}
 	
@@ -97,8 +119,8 @@ public class MainListener implements EventListener {
 		eventQueue.add(new EventContext(event.LAUNCH));
 	}
 	
-	public void newGraph(File file) {
-		eventQueue.add(new EventContext(event.NEW_GRAPH, new SettingNewFileGraph(file)));
+	public void newGraph(File file, GatesGroupPanel gatesGroupPanel) {
+		eventQueue.add(new EventContext(event.NEW_GRAPH, new SettingNewFileGraph(file,gatesGroupPanel)));
 	}
 	
 	public void setMouseNumberForGate(int i, int number) {
@@ -108,7 +130,7 @@ public class MainListener implements EventListener {
 	public void setWaitingTime(long time) {
 		eventQueue.add(new EventContext(event.TIME_CHANGE, new SettingWaitingTimeData(time)));
 	}
-
+	
 	public long getWaitingTime() {
 		return this.waitingTime ;
 	}
@@ -130,6 +152,7 @@ public class MainListener implements EventListener {
 				break;
 			case NEW_GRAPH:
 					CheeseMain.makeGraph(((SettingNewFileGraph)e.getData()).getFile());
+					CheeseMain.connectGateConfiguratorPanels(((SettingNewFileGraph)e.getData()).getGatesGroupPanel());
 					synchronized(gui) {
 						gui.notify();
 					}
@@ -137,8 +160,6 @@ public class MainListener implements EventListener {
 			case SET_MOUSE:	
 				break;
 			case TIME_CHANGE:
-				break;
-			default:
 				break;
 		}
 	}
