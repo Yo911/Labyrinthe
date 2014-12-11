@@ -148,7 +148,7 @@ public class GraphMaker {
 				System.out.println(n);
 			}
 			System.out.println();
-			graph.addDepart(new Gate<String, Object>(allAround, graph));
+			graph.addDepart(new Gate<String, Object>(allAround, graph, gates.get(i)));
 		}
 	}
 	
