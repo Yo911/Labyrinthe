@@ -7,13 +7,14 @@ import java.util.Comparator;
 import java.util.EventListener;
 import java.util.Set;
 
+import core.dataStructure.graph.Gate;
 import core.dataStructure.queue.priority.LinkedPriorityQueue;
 import core.play.CheeseMain;
 
 public class MainListener implements EventListener {
 
 	private long waitingTime = 50;
-	private GUI gui;
+	private TestGui gui;
 
 	private volatile LinkedPriorityQueue<EventContext> eventQueue = new LinkedPriorityQueue<>( new Comparator<EventContext>() {
 		@Override
@@ -46,16 +47,16 @@ public class MainListener implements EventListener {
 	
 	class SettingMouseNumberData implements EventData {
 		
-		private int gateId;
+		private Gate<String, Object> gate;
 		private int mouseNumber;
 		
-		private SettingMouseNumberData(int gateId, int mouseNumber) {
-			this.gateId = gateId;
+		private SettingMouseNumberData(Gate<String, Object> gate, int mouseNumber) {
+			this.gate = gate;
 			this.mouseNumber = mouseNumber;
 		}
 		
-		public int getGateId() {
-			return this.gateId;
+		public Gate<String, Object> getGate() {
+			return this.gate;
 		}
 		
 		public int getMouseNumber() {
@@ -107,8 +108,8 @@ public class MainListener implements EventListener {
 		}
 	}
 	
-	public void setGui(GUI gui) {
-		this.gui = gui;
+	public void setGui(TestGui gui2) {
+		this.gui = gui2;
 	}
 	
 	private static enum event {
@@ -127,8 +128,8 @@ public class MainListener implements EventListener {
 		eventQueue.add(new EventContext(event.NEW_GRAPH, new SettingNewFileGraph(file,null)));
 	}
 	
-	public void setMouseNumberForGate(int i, int number) {
-		eventQueue.add(new EventContext(event.SET_MOUSE, new SettingMouseNumberData(i,number)));
+	public void setMouseNumberForGate(Gate<String, Object> gate, int number) {
+		eventQueue.add(new EventContext(event.SET_MOUSE, new SettingMouseNumberData(gate,number)));
 	}
 	
 	public void setWaitingTime(long time) {
@@ -156,12 +157,16 @@ public class MainListener implements EventListener {
 				break;
 			case NEW_GRAPH:
 					CheeseMain.makeGraph(((SettingNewFileGraph)e.getData()).getFile());
-					//CheeseMain.connectGateConfiguratorPanels(((SettingNewFileGraph)e.getData()).getGatesGroupPanel());
+					CheeseMain.connectGateConfiguratorPanels(((SettingNewFileGraph)e.getData()).getGatesGroupPanel());
 					synchronized(gui) {
 						gui.notify();
 					}
 				break;
-			case SET_MOUSE:	
+			case SET_MOUSE:
+					CheeseMain.setMouseNumberForGate(
+							((SettingMouseNumberData)e.getData()).getGate(),
+							((SettingMouseNumberData)e.getData()).getMouseNumber()
+						);
 				break;
 			case TIME_CHANGE:
 				break;

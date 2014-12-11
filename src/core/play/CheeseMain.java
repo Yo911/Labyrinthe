@@ -1,8 +1,9 @@
 package core.play;
 
 
-import gui.GUI;
+import gui.GatesGroupPanel;
 import gui.MainListener;
+import gui.TestGui;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,9 +25,13 @@ public class CheeseMain {
 	
 	public static void main(String[] args) {
 		
+		CheeseSettings.setMainListener(mainListener);
+		
 		Runnable r = new Runnable(){
 			public void run(){
-				GUI.getGUI(mainListener);
+				TestGui gui = new TestGui();
+				mainListener.setGui(gui);
+				gui.initGui();
 			}
 		};
 		SwingUtilities.invokeLater(r);
@@ -49,11 +54,9 @@ public class CheeseMain {
 		Set<Gate<String, Object>> departures = CheeseSettings.getGraph().getDepartures();
 
 		
-		int j = 0;
-		for(Gate<String, Object> g : departures) {
-			g.setMouseNumber(CheeseSettings.getMouseNumberForGate(j));
-			j++;
-		}
+//		for(Gate<String, Object> g : departures) {
+//			g.setMouseNumber(CheeseSettings.getMouseNumberForGate(g));
+//		}
 
 		int i = 0;
 		IMouse<String,Object> m = null;
@@ -107,5 +110,16 @@ public class CheeseMain {
 
 	public static boolean isGraphValid() {
 		return CheeseMain.graphIsValid;
+	}
+
+	public static void connectGateConfiguratorPanels(GatesGroupPanel gatesGroupPanel) {
+		Set<Gate<String, Object>> gates = CheeseSettings.getGraph().getDepartures();
+		for(Gate<String, Object> gate : gates) {
+			gatesGroupPanel.addGateConfiguratorPanelWith(gate);
+		}
+	}
+
+	public static void setMouseNumberForGate(Gate<String, Object> gate, int mouseNumber) {
+		CheeseSettings.setMouseNumberForGate(gate, mouseNumber);
 	}
 }

@@ -1,47 +1,55 @@
 package gui;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
-import core.dataStructure.graph.Coordinates;
-import core.graphMaker.GraphMaker;
+import core.dataStructure.graph.Gate;
+import core.play.CheeseSettings;
 
 public class GatesGroupPanel extends JPanel {
 
 	private static final long serialVersionUID = -507763454416265178L;
-	private Set<GateConfiguratorPanel> gateConfiguratorPanelSet = new HashSet<GateConfiguratorPanel>();
+	private static final MainListener mainListener = CheeseSettings.getMainLister();
 	
-	public void addGateConfiguratorPanels(GraphMaker graph) {
-		List<Coordinates> gateCoordinates = graph.getGates();
-		GateConfiguratorPanel gateConfiguratorPanel;
-		for(Coordinates c : gateCoordinates) {
-			gateConfiguratorPanel = new GateConfiguratorPanel(c);
-			add(gateConfiguratorPanel);
-			gateConfiguratorPanelSet.add(gateConfiguratorPanel);
+	public class GateConfiguratorPanel extends JPanel {
+
+		private static final long serialVersionUID = 4841609095354179480L;
+		private JSpinner spinner;
+		private Gate<String,Object> gate;
+
+		public GateConfiguratorPanel(Gate<String,Object> gate) {
+			
+			this.gate = gate;
+			this.spinner = new JSpinner();
+			this.spinner.setValue(CheeseSettings.getMouseNumberForGate(gate));
+			
+			JPanel panel_7 = new JPanel();
+			JLabel label_1 = new JLabel("Gate("+this.gate.getLocation()+")");
+			panel_7.add(label_1);
+			panel_7.add(spinner);
+			add(panel_7);
+			
+			initSpinnerLister();
 		}
+
+		private void initSpinnerLister() {
+			spinner.addChangeListener( new ChangeListener() {
+				
+				@Override
+				public void stateChanged(ChangeEvent e) {
+					mainListener.setMouseNumberForGate(gate, (Integer)spinner.getValue());
+				}
+			});
+			
+		}
+
 	}
 
-	public class GateConfiguratorPanel extends JPanel {
-		
-		private static final long serialVersionUID = 4841609095354179480L;
-
-		public GateConfiguratorPanel(Coordinates c) {
-			JPanel panel_7 = new JPanel();
-		
-			JLabel label_1 = new JLabel("Gate("+c+")");
-			panel_7.add(label_1);
-			
-			JSpinner spinner_1 = new JSpinner();
-			panel_7.add(spinner_1);
-			
-			add(panel_7);
-		}
-
+	public void addGateConfiguratorPanelWith(Gate<String, Object> gate) {
+		add(new GateConfiguratorPanel(gate));
 	}
 
 }

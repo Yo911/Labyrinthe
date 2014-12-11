@@ -18,7 +18,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -36,22 +35,11 @@ public class TestGui extends JFrame {
 	private MainListener mainListener;
 	private static final long serialVersionUID = 5879604636994443413L;
 	
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
-			
-			@Override
-			public void run() {
-				new TestGui(null);
-			}
-		});
+	public TestGui() {
+		this.mainListener = CheeseSettings.getMainLister();
 	}
 	
-	public TestGui(MainListener mainListener) {
-		this.mainListener = mainListener;
-		initGui();
-	}
-	
-	private void initGui() {
+	public void initGui() {
 		
 		int width = 800;
 		int height = 500;
@@ -177,13 +165,12 @@ public class TestGui extends JFrame {
 						
 						if(graphIsWellFormed) {
 							gamePanel.drawMap(CheeseSettings.getGraphMaker());
-							
 						}
 						else {
 							gamePanel.add(new JLabel("The file isn't good ! "));
 							gamePanel.repaint();
-							revalidate();
 						}
+						revalidate();
 					
 					} catch (IOException e) {
 						e.printStackTrace();

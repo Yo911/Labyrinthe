@@ -14,11 +14,13 @@ public class Gate<K,V> {
 	private int mouseNumber;
 	private IGraph<K,V> graph;
 	private boolean valid = true;
+	private Coordinates coordinates;
 	
-	public Gate(Set<INode<K,V>> departures, IGraph<K,V> graph) {
+	public Gate(Set<INode<K,V>> departures, IGraph<K,V> graph, Coordinates coordinates) {
 		this.departures = departures;
 		this.mouseNumber = 0;
 		this.graph = graph;
+		this.coordinates = coordinates;
 	}
 	
 	public void setMouseNumber(int mouseNumber) {
@@ -53,5 +55,9 @@ public class Gate<K,V> {
 
 	public void unvalidateGate() {
 		this.valid = false;
+	}
+
+	public Coordinates getLocation() {
+		return this.coordinates;
 	}
 }

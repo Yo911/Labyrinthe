@@ -29,6 +29,9 @@ public class GamePanel extends JPanel{
 	private GraphMaker graphMaker;
 
 	public void drawMap(GraphMaker graphMaker) throws IOException {
+		
+		setLayout(new GridBagLayout());
+		
 		Map<String, GenericNode<String, Object>> nodes = graphMaker.getNodes();
 		int lengthMax = graphMaker.getLength();
 		int iMax = graphMaker.getLineLength();
