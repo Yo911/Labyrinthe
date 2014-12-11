@@ -59,33 +59,34 @@ public class CheeseMain {
 		}
 
 		int i = 0;
-		IMouse<String,Object> m = null;
+		long moveTime, timeLeft;
 		try {
 			do {
-				for(Gate<String, Object> gate : departures) {
-					System.out.println("in for : gate = " + gate);
-;					Set<IMouse<String, Object>> n = gate.getNewMouses();
-					rr.add(n);
-				}
-				System.out.println("size = " + rr.size());
-
+				do {
+					
+					for(Gate<String, Object> gate : departures) {
+						Set<IMouse<String, Object>> n = gate.getNewMouses();
+						rr.add(n);
+					}
+					
+					moveTime = CheeseSettings.getTurnTime();
+					timeLeft = moveTime/2;
+					moveTime -= timeLeft;
+					moveTime /= rr.size();
+					
+					if(rr.size() != 0) {	
+						i++;
+						if(rr.next().doSomething() == true) {
+							rr.remove();
+						}
+					}
+					
+					Thread.sleep(moveTime);
+					
+				}while(rr.size() != 0 && rr.hasNext());
 				
-				if(rr.size() != 0) {
-					
-					i++;
-					m = rr.next();
-					
-					if(m.doSomething() == true) {
-						System.out.println("Mouse " + m.hashCode() + " location: " + m.getLocation());
-						rr.remove();
-					}
-					else {
-						System.out.println("Mouse " + m.hashCode() + " location: " + m.getLocation());
-					}
-					
-					
-					Thread.sleep(CheeseSettings.getTurnTime());
-				}
+				Thread.sleep(timeLeft);
+			
 			} while(rr.size() != 0) ;
 		} catch (RoundRobinEmptyException | InterruptedException e) {}
 		System.out.println(i);

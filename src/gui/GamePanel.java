@@ -70,13 +70,11 @@ public class GamePanel extends JPanel{
 
 	public void refresh(MoveEventData med) {
 		if( med.getNodeLeaved() != null ) {
-			if(med.getNewNode() == null) {
-				System.out.println("la");
-			}
 			refreshNode(med.getNodeLeaved());
 		}
-		if( med.getNewNode() != null )
+		if( med.getNewNode() != null ) {
 			refreshNode(med.getNewNode());
+		}
 	}
 	
 	public void refreshNode(INode<?, ?> node) {
