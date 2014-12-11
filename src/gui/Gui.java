@@ -196,11 +196,12 @@ public class Gui extends JFrame {
 			
 			@Override
 			public void removeUpdate(DocumentEvent e) {
+				System.out.println("je passe");
 				try {
 					long time = Long.parseLong(turnTimeTextField.getText());
 					updateData(time);
 				}
-				catch(Exception ex) {
+				catch(NumberFormatException ex) {
 					setPreviousText();
 				}
 			}

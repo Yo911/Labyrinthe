@@ -15,8 +15,7 @@ import core.dataStructure.queue.priority.LinkedPriorityQueue;
 import core.play.CheeseMain;
 
 public class MainListener implements EventListener {
-
-	private long waitingTime = 50;
+	
 	private Gui gui;
 	private List<Thread> threadList = new ArrayList<Thread>();
 
@@ -139,10 +138,6 @@ public class MainListener implements EventListener {
 	
 	public void setWaitingTime(long time) {
 		eventQueue.add(new EventContext(event.TIME_CHANGE, new SettingWaitingTimeData(time)));
-	}
-	
-	public long getWaitingTime() {
-		return this.waitingTime ;
 	}
 
 	public void fireEvents() {
