@@ -3,8 +3,11 @@ package gui;
 import gui.GatesGroupPanel.GateConfiguratorPanel;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.EventListener;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import core.dataStructure.graph.Gate;
@@ -14,7 +17,8 @@ import core.play.CheeseMain;
 public class MainListener implements EventListener {
 
 	private long waitingTime = 50;
-	private TestGui gui;
+	private Gui gui;
+	private List<Thread> threadList = new ArrayList<Thread>();
 
 	private volatile LinkedPriorityQueue<EventContext> eventQueue = new LinkedPriorityQueue<>( new Comparator<EventContext>() {
 		@Override
@@ -108,7 +112,7 @@ public class MainListener implements EventListener {
 		}
 	}
 	
-	public void setGui(TestGui gui2) {
+	public void setGui(Gui gui2) {
 		this.gui = gui2;
 	}
 	
@@ -129,6 +133,7 @@ public class MainListener implements EventListener {
 	}
 	
 	public void setMouseNumberForGate(Gate<String, Object> gate, int number) {
+		System.out.println("gate("+gate.getLocation()+")"+ " " + number);
 		eventQueue.add(new EventContext(event.SET_MOUSE, new SettingMouseNumberData(gate,number)));
 	}
 	
@@ -150,25 +155,51 @@ public class MainListener implements EventListener {
 		}
 	}
 
-	private void fire(EventContext e) {
+	private synchronized void fire(final EventContext e) {
 		switch(e.getEventType()) {
 			case LAUNCH:
-					CheeseMain.letsGo();
+				threadList.add(new Thread() {
+					public void run() {
+						CheeseMain.letsGo();
+					}
+				});
+				threadList.get(threadList.size()-1).start();
 				break;
 			case NEW_GRAPH:
-					CheeseMain.makeGraph(((SettingNewFileGraph)e.getData()).getFile());
-					CheeseMain.connectGateConfiguratorPanels(((SettingNewFileGraph)e.getData()).getGatesGroupPanel());
-					synchronized(gui) {
-						gui.notify();
+				Iterator<Thread> it = threadList.iterator();
+				while(it.hasNext()) {
+					it.next().interrupt();
+					it.remove();
+				}
+				threadList.add(new Thread() {
+					public void run() {
+						CheeseMain.makeGraph(((SettingNewFileGraph)e.getData()).getFile());
+						CheeseMain.connectGateConfiguratorPanels(((SettingNewFileGraph)e.getData()).getGatesGroupPanel());
+						synchronized(gui) {
+							gui.notify();
+						}
 					}
+				});
+				threadList.get(threadList.size()-1).start();
 				break;
 			case SET_MOUSE:
+				threadList.add(new Thread() {
+					public void run() {
 					CheeseMain.setMouseNumberForGate(
 							((SettingMouseNumberData)e.getData()).getGate(),
 							((SettingMouseNumberData)e.getData()).getMouseNumber()
 						);
+					}
+				});
+				threadList.get(threadList.size()-1).start();
 				break;
 			case TIME_CHANGE:
+				threadList.add(new Thread() {
+					public void run() {
+						CheeseMain.setTurnTime(((SettingWaitingTimeData)e.getData()).getTime());
+					}
+				});
+				threadList.get(threadList.size()-1).start();
 				break;
 		}
 	}

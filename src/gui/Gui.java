@@ -25,7 +25,7 @@ import core.play.CheeseMain;
 import core.play.CheeseSettings;
 
 
-public class TestGui extends JFrame {
+public class Gui extends JFrame {
 	
 	private JButton btnGetFile;
 	private JButton btnLaunch;
@@ -35,7 +35,7 @@ public class TestGui extends JFrame {
 	private MainListener mainListener;
 	private static final long serialVersionUID = 5879604636994443413L;
 	
-	public TestGui() {
+	public Gui() {
 		this.mainListener = CheeseSettings.getMainLister();
 	}
 	
@@ -142,10 +142,9 @@ public class TestGui extends JFrame {
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		pack();
+		setVisible(true);
 		
 		initListener();
-		
-		setVisible(true);
 	}
 	
 	private void initListener() {
@@ -218,6 +217,8 @@ public class TestGui extends JFrame {
 			@Override
 			public void changedUpdate(DocumentEvent e) {}
 		});
+		
+		CheeseSettings.setGamePanel(gamePanel);
 	}
 	
 	private void fireTimeSetting(long time) {

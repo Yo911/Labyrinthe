@@ -3,7 +3,7 @@ package core.play;
 
 import gui.GatesGroupPanel;
 import gui.MainListener;
-import gui.TestGui;
+import gui.Gui;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,7 +29,7 @@ public class CheeseMain {
 		
 		Runnable r = new Runnable(){
 			public void run(){
-				TestGui gui = new TestGui();
+				Gui gui = new Gui();
 				mainListener.setGui(gui);
 				gui.initGui();
 			}
@@ -54,9 +54,9 @@ public class CheeseMain {
 		Set<Gate<String, Object>> departures = CheeseSettings.getGraph().getDepartures();
 
 		
-//		for(Gate<String, Object> g : departures) {
-//			g.setMouseNumber(CheeseSettings.getMouseNumberForGate(g));
-//		}
+		for(Gate<String, Object> g : departures) {
+			g.setMouseNumber(CheeseSettings.getMouseNumberForGate(g));
+		}
 
 		int i = 0;
 		IMouse<String,Object> m = null;
@@ -84,7 +84,7 @@ public class CheeseMain {
 					}
 					
 					
-						Thread.sleep(mainListener.getWaitingTime());
+					Thread.sleep(CheeseSettings.getTurnTime());
 				}
 			} while(rr.size() != 0) ;
 		} catch (RoundRobinEmptyException | InterruptedException e) {}
@@ -121,5 +121,9 @@ public class CheeseMain {
 
 	public static void setMouseNumberForGate(Gate<String, Object> gate, int mouseNumber) {
 		CheeseSettings.setMouseNumberForGate(gate, mouseNumber);
+	}
+
+	public static void setTurnTime(long time) {
+		CheeseSettings.setTurnTime(time);
 	}
 }

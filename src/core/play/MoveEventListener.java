@@ -1,27 +1,29 @@
 package core.play;
 
-import gui.GUI;
+import gui.GamePanel;
 
 import java.util.EventListener;
 
 public class MoveEventListener implements EventListener {
 	
-	private GUI gui;
+	private static GamePanel gamePanel;
 	private static MoveEventListener listener;
 	
-	private MoveEventListener(GUI gui) {
-		this.gui = gui;
+	private MoveEventListener() {
+		if(MoveEventListener.gamePanel == null) {
+			MoveEventListener.gamePanel = CheeseSettings.getGamePanel();
+		}
 	}
 	
 	public static MoveEventListener getListener() {
 		if( listener == null ) {
-			listener = new MoveEventListener(GUI.getGUI());
+			listener = new MoveEventListener();
 		}
 		return listener;
 	}
 	
 	public void onEvent(MoveEventData data) {
-		gui.refresh(data);
+		gamePanel.refresh(data);
 	}
 	
 }

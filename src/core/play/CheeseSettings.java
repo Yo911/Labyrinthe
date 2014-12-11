@@ -1,5 +1,6 @@
 package core.play;
 
+import gui.GamePanel;
 import gui.MainListener;
 
 import java.util.Comparator;
@@ -17,7 +18,9 @@ public class CheeseSettings {
 	private static IGraph<String,Object> graph;
 	private static GraphMaker graphMaker;
 	private static volatile MainListener mainListener;
-	private static Map<Gate<String,Object>,Integer> gateSettings = new HashMap<Gate<String,Object>,Integer>();
+	private static volatile Map<Gate<String,Object>,Integer> gateSettings = new HashMap<Gate<String,Object>,Integer>();
+	private static GamePanel gamePanel;
+	private static volatile long turnTime = 100;
 
 	public static Comparator<Path> getComparator() {
 		if(comparator == null) {
@@ -66,6 +69,22 @@ public class CheeseSettings {
 	
 	public static void setMainListener(MainListener mainListener) {
 		CheeseSettings.mainListener = mainListener;
+	}
+
+	public static GamePanel getGamePanel() {
+		return CheeseSettings.gamePanel;
+	}
+	
+	public static void setGamePanel(GamePanel gamePanel) {
+		CheeseSettings.gamePanel = gamePanel;
+	}
+
+	public static void setTurnTime(long time) {
+		CheeseSettings.turnTime = time;
+	}
+	
+	public static long getTurnTime() {
+		return CheeseSettings.turnTime ;
 	}
 
 }
