@@ -62,19 +62,19 @@ public class GraphMaker {
 						switch (c) {
 								case CHAR_BUSH :
 									cost = 2;
-									type = "bush";
+									type = TYPE_BUSH;
 									break;
 								case CHAR_FREE_SPACE :
 									cost = 1;
-									type = "free";
+									type = TYPE_FREE;
 									break;
 								case CHAR_ARRIVAL :
 									cost = 1;
-									type = "arrival";
+									type = TYPE_ARRIVAL;
 									break;
 								case CHAR_DEPART :
 									cost = 1;
-									type = "depart";
+									type = TYPE_DEPART;
 									gates.add(new Coordinates(j, i));
 									break;
 								default:
@@ -148,7 +148,7 @@ public class GraphMaker {
 				System.out.println(n);
 			}
 			System.out.println();
-			graph.addDepart(new Gate<String, Object>(allAround, graph, new Coordinates(gates.get(i).getX(),gates.get(i).getX())));
+			graph.addDepart(new Gate<String, Object>(allAround, graph));
 		}
 	}
 	
@@ -270,7 +270,12 @@ public class GraphMaker {
 	public static final char CHAR_WALL       = '*';
 	public static final char CHAR_ARRIVAL    = 'A';
 	public static final char CHAR_DEPART     = 'D'; 
-	
+
+	public static final String TYPE_BUSH 	= "bush";
+	public static final String TYPE_FREE    = "free";
+	public static final String TYPE_ARRIVAL = "arrival";
+	public static final String TYPE_DEPART  = "depart";
+
 	private List<String> elements = new ArrayList<String>();
 	{
 		elements.add(CHAR_FREE_SPACE + "");
