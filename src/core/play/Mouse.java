@@ -25,6 +25,7 @@ public class Mouse<K,V> implements IMouse<K,V> {
 	private boolean canMove;
 	
 	private final EventListenerList listeners = new EventListenerList();
+	private boolean hasMoved;
 	
 	public Mouse(INode<K,V> location, IGraph<K,V> map, int counter) {
 		setLocation(location,counter);
@@ -116,6 +117,8 @@ public class Mouse<K,V> implements IMouse<K,V> {
 
 	public boolean doSomething() {
 		
+		hasMoved = true;
+		
 		Set<INode<K,V>> forbiddenNextSteps = getForbiddenNextSteps();
 		
 		if( !canMove || counter > 1 ) {
@@ -128,6 +131,12 @@ public class Mouse<K,V> implements IMouse<K,V> {
 	
 	private void stay() {
 		counter--;
+		hasMoved = false;
+	}
+	
+	@Override
+	public boolean hasMoved() {
+		return this.hasMoved;
 	}
 
 	private boolean move(Set<INode<K,V>> forbiddenNextSteps) {
@@ -148,7 +157,7 @@ public class Mouse<K,V> implements IMouse<K,V> {
 		INode<?,?> oldLocation = this.location;
 		try {
 			Entry<INode<?,?>, Integer> newLocation = route.peek();
-			if( setLocation((INode<K, V>) newLocation.getKey(),newLocation.getValue()) ) {
+			if(setLocation((INode<K, V>) newLocation.getKey(),newLocation.getValue())) {
 				route.pop();
 				route.peek(); // Si on est arrivé au fromage une exception est levée;
 				notifyMove(new MoveEventData(oldLocation, newLocation.getKey()));

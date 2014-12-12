@@ -22,6 +22,7 @@ public class CheeseMain {
 	
 	private static final MainListener mainListener = new MainListener();
 	private static boolean graphIsValid;
+	private static Gui gui;
 	
 	public static void main(String[] args) {
 		
@@ -29,7 +30,7 @@ public class CheeseMain {
 		
 		Runnable r = new Runnable(){
 			public void run(){
-				Gui gui = new Gui();
+				gui = new Gui();
 				mainListener.setGui(gui);
 				gui.initGui();
 			}
@@ -49,6 +50,7 @@ public class CheeseMain {
 	}
 	
 	public static void letsGo() {
+		
 		IRoundRobin<IMouse<String,Object>> rr = new RoundRobinFIFO<>();
 		
 		Set<Gate<String, Object>> departures = CheeseSettings.getGraph().getDepartures();
@@ -58,8 +60,9 @@ public class CheeseMain {
 			g.setMouseNumber(CheeseSettings.getMouseNumberForGate(g));
 		}
 
-		int i = 0;
+		int nbMovements = 0, nbMovingMouses = 0, nbMousesArrivied = 0, nbTurn = 0;
 		long moveTime, timeLeft;
+		IMouse<String, Object> m;
 		try {
 			do {
 				do {
@@ -69,27 +72,36 @@ public class CheeseMain {
 						rr.add(n);
 					}
 					
+					nbMovingMouses = rr.size();
+					
 					moveTime = CheeseSettings.getTurnTime();
 					timeLeft = moveTime/2;
 					moveTime -= timeLeft;
 					moveTime /= rr.size();
 					
+					m = rr.next();
+					
 					if(rr.size() != 0) {	
-						i++;
-						if(rr.next().doSomething() == true) {
+						if(m.doSomething() == true) {
 							rr.remove();
+							nbMousesArrivied++;
+						}
+						if(m.hasMoved()) {
+							nbMovements++;
 						}
 					}
 					
 					Thread.sleep(moveTime);
 					
+					gui.refreshData(nbMovements, nbMovingMouses, nbMousesArrivied, nbTurn);
+					
 				}while(rr.size() != 0 && rr.hasNext());
 				
+				nbTurn++;
 				Thread.sleep(timeLeft);
 			
 			} while(rr.size() != 0) ;
 		} catch (RoundRobinEmptyException | InterruptedException e) {}
-		System.out.println(i);
 	}
 
 	public static void makeGraph(File file) {

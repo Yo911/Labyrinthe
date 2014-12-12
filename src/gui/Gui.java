@@ -33,6 +33,10 @@ public class Gui extends JFrame {
 	private JTextField turnTimeTextField;
 	private GatesGroupPanel gatesGroupPanel;
 	private MainListener mainListener;
+	private JLabel lblNbMovements;
+	private JLabel lblNbMovingMouses;
+	private JLabel lblNbMousesArrivied;
+	private JLabel lblNbTurn;
 	private static final long serialVersionUID = 5879604636994443413L;
 	
 	public Gui() {
@@ -110,7 +114,7 @@ public class Gui extends JFrame {
 		JLabel lblTurn = new JLabel("Nombre de tour:");
 		panel_11.add(lblTurn);
 		
-		JLabel lblNbTurn = new JLabel("12");
+		lblNbTurn = new JLabel("12");
 		panel_11.add(lblNbTurn);
 		
 		JPanel panel_10 = new JPanel();
@@ -119,8 +123,8 @@ public class Gui extends JFrame {
 		JLabel lblMovements = new JLabel("Déplacements");
 		panel_10.add(lblMovements);
 		
-		JLabel lblNbMovement = new JLabel("12");
-		panel_10.add(lblNbMovement);
+		lblNbMovements = new JLabel("0");
+		panel_10.add(lblNbMovements);
 		
 		JPanel panel_9 = new JPanel();
 		panel_6.add(panel_9);
@@ -128,7 +132,7 @@ public class Gui extends JFrame {
 		JLabel lblMovingMouses = new JLabel("Souris en déplacement:");
 		panel_9.add(lblMovingMouses);
 		
-		JLabel lblNbMovingMouses = new JLabel("0");
+		lblNbMovingMouses = new JLabel("0");
 		panel_9.add(lblNbMovingMouses);
 		
 		JPanel panel_12 = new JPanel();
@@ -137,7 +141,7 @@ public class Gui extends JFrame {
 		JLabel lblMousesArrived = new JLabel("Nombre de souris arrivées:");
 		panel_12.add(lblMousesArrived);
 		
-		JLabel lblNbMousesArrivied = new JLabel("0");
+		lblNbMousesArrivied = new JLabel("0");
 		panel_12.add(lblNbMousesArrivied);
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -240,5 +244,12 @@ public class Gui extends JFrame {
 	
 	private void fireLlaunch() {
 		mainListener.launchMouses();
+	}
+	
+	public void refreshData(final int nbMovements, final int nbMovingMouses, final int nbMousesArrivied, final int nbTurn) {
+		lblNbMovements.setText(""+nbMovements);
+		lblNbMovingMouses.setText(""+nbMovingMouses);
+		lblNbMousesArrivied.setText(""+nbMousesArrivied);
+		lblNbTurn.setText(""+nbTurn);
 	}
 }
