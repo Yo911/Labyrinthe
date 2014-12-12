@@ -16,7 +16,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -114,7 +113,7 @@ public class Gui extends JFrame {
 		JLabel lblTurn = new JLabel("Nombre de tour:");
 		panel_11.add(lblTurn);
 		
-		lblNbTurn = new JLabel("12");
+		lblNbTurn = new JLabel("0");
 		panel_11.add(lblNbTurn);
 		
 		JPanel panel_10 = new JPanel();

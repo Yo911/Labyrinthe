@@ -126,6 +126,7 @@ public class CheeseMain {
 	}
 
 	public static void connectGateConfiguratorPanels(GatesGroupPanel gatesGroupPanel) {
+		gatesGroupPanel.removeAll();
 		Set<Gate<String, Object>> gates = CheeseSettings.getGraph().getDepartures();
 		for(Gate<String, Object> gate : gates) {
 			gatesGroupPanel.addGateConfiguratorPanelWith(gate);
