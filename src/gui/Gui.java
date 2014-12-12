@@ -30,7 +30,7 @@ public class Gui extends JFrame {
 	private JButton btnGetFile;
 	private JButton btnLaunch;
 	private GamePanel gamePanel;
-	private JTextField turnTimeTextField;
+	private JFloatField turnTimeTextField;
 	private GatesGroupPanel gatesGroupPanel;
 	private MainListener mainListener;
 	private JLabel lblNbMovements;
@@ -73,7 +73,7 @@ public class Gui extends JFrame {
 		JLabel lblTempsDeTour = new JLabel("Temps de tour: ");
 		panel_3.add(lblTempsDeTour);	
 		
-		turnTimeTextField = new JTextField();
+		turnTimeTextField = new JFloatField();
 		turnTimeTextField.setHorizontalAlignment(SwingConstants.LEFT);
 		turnTimeTextField.setText("100");
 		panel_3.add(turnTimeTextField);
