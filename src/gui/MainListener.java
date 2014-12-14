@@ -59,11 +59,8 @@ public class MainListener implements EventListener {
 			this.mouseNumber = mouseNumber;
 		}
 		
-		public void setGate(Gate<String, Object> gate) {
+		private void init(Gate<String, Object> gate, int mouseNumber) {
 			this.gate = gate;
-		}
-		
-		public void setNumber(int mouseNumber) {
 			this.mouseNumber = mouseNumber;
 		}
 		
@@ -145,8 +142,7 @@ public class MainListener implements EventListener {
 	
 	public synchronized void setMouseNumberForGate(Gate<String, Object> gate, int number) {
 		System.out.println("gate("+gate.getLocation()+")"+ " " + number);
-		smnd.setGate(gate);
-		smnd.setNumber(number);
+		smnd.init(gate, number);
 		eventQueue.add(new EventContext(event.SET_MOUSE, smnd));
 	}
 	
