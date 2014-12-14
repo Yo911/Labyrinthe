@@ -58,7 +58,7 @@ public class CheeseSettings {
 	}
 
 	public static void setMouseNumberForSpinner(Gate<String, Object> gate) {
-		gateSpinners.get(gate).setValue((Integer)gate.getMouseNumber());
+		gateSpinners.get(gate).setValue(gate.getMouseNumber());
 	}
 
 	public static IGraph<String, Object> getGraph() {

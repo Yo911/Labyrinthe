@@ -143,7 +143,7 @@ public class MainListener implements EventListener {
 		eventQueue.add(new EventContext(event.NEW_GRAPH, new SettingNewFileGraph(file,null)));
 	}
 	
-	public void setMouseNumberForGate(Gate<String, Object> gate, int number) {
+	public synchronized void setMouseNumberForGate(Gate<String, Object> gate, int number) {
 		System.out.println("gate("+gate.getLocation()+")"+ " " + number);
 		smnd.setGate(gate);
 		smnd.setNumber(number);
