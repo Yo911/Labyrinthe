@@ -16,12 +16,9 @@ public class JFloatField extends JTextField {
 	 */
 	private static final long serialVersionUID = 1L;
 	private Toolkit toolkit;
-	private DecimalFormat decimalFormatter;
-	private char decimalSeparator;
 
 	private void init() {
 		toolkit = Toolkit.getDefaultToolkit();
-		setDecimalFormat(new DecimalFormat("#0.00"));
 	}
 
 	public JFloatField() {
@@ -34,27 +31,15 @@ public class JFloatField extends JTextField {
 		init();
 	}
 
-	public void setDecimalFormat(DecimalFormat formatter) {
-		decimalFormatter = formatter;
-		decimalSeparator = decimalFormatter.getDecimalFormatSymbols()
-				.getDecimalSeparator();
-	}
-
 	public float getValue() {
 		if (getText().equals("")) {
 			return 0;
 		}
-		try {
-			return decimalFormatter.parse(getText()).floatValue();
-		} catch (ParseException e) {
-			// ne devrait jamais arriver
-			toolkit.beep();
-			return 0;
-		}
+		return Float.valueOf(getText()).floatValue();
 	}
 
 	public void setValue(float value) {
-		setText(decimalFormatter.format(value));
+		setText(value +"");
 	}
 
 	public void format() {
@@ -80,19 +65,9 @@ public class JFloatField extends JTextField {
 			char c;
 			for (int i = 0; i < result.length; i++) {
 				c = source[i];
-				if (c == '.') {
-					c = decimalSeparator;
-				}
 				if (Character.isDigit(c))
 					result[j++] = c;
-				else if (c == decimalSeparator) {
-					if (!comma) {
-						comma = true;
-						result[j++] = c;
-					} else {
-						toolkit.beep();
-					}
-				} else {
+				else {
 					toolkit.beep();
 				}
 			}
@@ -101,9 +76,6 @@ public class JFloatField extends JTextField {
 
 		public void remove(int offs, int len) throws BadLocationException {
 			String removedText = getText(offs, len);
-			if (removedText.indexOf(decimalSeparator) != -1) {
-				comma = false;
-			}
 			super.remove(offs, len);
 		}
 	}
