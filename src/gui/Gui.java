@@ -83,6 +83,7 @@ public class Gui extends JFrame {
 		gatesGroupPanel.setLayout(new BoxLayout(gatesGroupPanel, BoxLayout.Y_AXIS));
 		
 		JScrollPane scroll = new JScrollPane(gatesGroupPanel);
+		CheeseSettings.setSpinners(gatesGroupPanel);
 		
 		panel_2.add(scroll);
 		

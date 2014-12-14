@@ -1,11 +1,14 @@
 package core.play;
 
 import gui.GamePanel;
+import gui.GatesGroupPanel;
 import gui.MainListener;
 
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.swing.JSpinner;
 
 import core.dataStructure.graph.Gate;
 import core.dataStructure.graph.interfaces.IGraph;
@@ -19,6 +22,7 @@ public class CheeseSettings {
 	private static GraphMaker graphMaker;
 	private static volatile MainListener mainListener;
 	private static volatile Map<Gate<String,Object>,Integer> gateSettings = new HashMap<Gate<String,Object>,Integer>();
+	private static Map<Gate,JSpinner> gateSpinners;
 	private static GamePanel gamePanel;
 	private static volatile long turnTime = 500;
 
@@ -36,15 +40,25 @@ public class CheeseSettings {
 		return comparator;
 	}
 
+	public static void setSpinners(GatesGroupPanel ggp) {
+		gateSpinners = ggp.getAllSpinners();
+	}
+	
 	public static int getMouseNumberForGate(Gate<String, Object> gate) {
-		if(gateSettings.isEmpty()) 
+		if(gateSettings.isEmpty() || gateSettings.get(gate) == null) {
+			gateSettings.put(gate, 50);
 			return 50;
+		}
 		return gateSettings.get(gate);
 	}
 	
-	public static void setMouseNumberForGate(Gate<String,Object> gate, int n) {
-		gateSettings.put(gate, n);
+	public static void setMouseNumberForGate(Gate<String, Object> gate, int n) {
 		gate.setMouseNumber(n);
+		gateSettings.put(gate, n);
+	}
+
+	public static void setMouseNumberForSpinner(Gate<String, Object> gate) {
+		gateSpinners.get(gate).setValue((Integer)gate.getMouseNumber());
 	}
 
 	public static IGraph<String, Object> getGraph() {

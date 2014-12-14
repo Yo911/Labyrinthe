@@ -1,10 +1,11 @@
 package core.dataStructure.graph;
 
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 
 import core.dataStructure.graph.interfaces.IGraph;
 import core.dataStructure.graph.interfaces.INode;
+import core.play.CheeseSettings;
 import core.play.IMouse;
 import core.play.Mouse;
 
@@ -25,6 +26,10 @@ public class Gate<K,V> {
 	
 	public void setMouseNumber(int mouseNumber) {
 		this.mouseNumber = mouseNumber;
+	}
+	
+	public int getMouseNumber() {
+		return this.mouseNumber;
 	}
 	
 	public Set<INode<K,V>> getCaseAround() {

@@ -50,7 +50,6 @@ public class CheeseMain {
 	}
 	
 	public static void letsGo() {
-		
 		IRoundRobin<IMouse<String,Object>> rr = new RoundRobinFIFO<>();
 		
 		Set<Gate<String, Object>> departures = CheeseSettings.getGraph().getDepartures();
@@ -74,6 +73,7 @@ public class CheeseMain {
 					for(Gate<String, Object> gate : departures) {
 						Set<IMouse<String, Object>> n = gate.getNewMouses();
 						rr.add(n);
+						CheeseSettings.setMouseNumberForSpinner(gate);
 					}
 					
 					nbMovingMouses = rr.size();
@@ -134,9 +134,11 @@ public class CheeseMain {
 
 	public static void connectGateConfiguratorPanels(GatesGroupPanel gatesGroupPanel) {
 		gatesGroupPanel.removeAll();
-		Set<Gate<String, Object>> gates = CheeseSettings.getGraph().getDepartures();
-		for(Gate<String, Object> gate : gates) {
-			gatesGroupPanel.addGateConfiguratorPanelWith(gate);
+		if(graphIsValid) {
+			Set<Gate<String, Object>> gates = CheeseSettings.getGraph().getDepartures();
+			for(Gate<String, Object> gate : gates) {
+				gatesGroupPanel.addGateConfiguratorPanelWith(gate);
+			}
 		}
 	}
 

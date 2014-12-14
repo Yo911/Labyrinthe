@@ -18,6 +18,7 @@ public class MainListener implements EventListener {
 	
 	private Gui gui;
 	private List<Thread> threadList = new ArrayList<Thread>();
+	private SettingMouseNumberData smnd = new SettingMouseNumberData();
 
 	private volatile LinkedPriorityQueue<EventContext> eventQueue = new LinkedPriorityQueue<>( new Comparator<EventContext>() {
 		@Override
@@ -52,10 +53,21 @@ public class MainListener implements EventListener {
 		
 		private Gate<String, Object> gate;
 		private int mouseNumber;
-		
+
 		private SettingMouseNumberData(Gate<String, Object> gate, int mouseNumber) {
 			this.gate = gate;
 			this.mouseNumber = mouseNumber;
+		}
+		
+		public void setGate(Gate<String, Object> gate) {
+			this.gate = gate;
+		}
+		
+		public void setNumber(int mouseNumber) {
+			this.mouseNumber = mouseNumber;
+		}
+		
+		private SettingMouseNumberData() {
 		}
 		
 		public Gate<String, Object> getGate() {
@@ -133,7 +145,9 @@ public class MainListener implements EventListener {
 	
 	public void setMouseNumberForGate(Gate<String, Object> gate, int number) {
 		System.out.println("gate("+gate.getLocation()+")"+ " " + number);
-		eventQueue.add(new EventContext(event.SET_MOUSE, new SettingMouseNumberData(gate,number)));
+		smnd.setGate(gate);
+		smnd.setNumber(number);
+		eventQueue.add(new EventContext(event.SET_MOUSE, smnd));
 	}
 	
 	public void setWaitingTime(long time) {
