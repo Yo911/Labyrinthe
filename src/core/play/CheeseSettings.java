@@ -20,7 +20,7 @@ public class CheeseSettings {
 	private static volatile MainListener mainListener;
 	private static volatile Map<Gate<String,Object>,Integer> gateSettings = new HashMap<Gate<String,Object>,Integer>();
 	private static GamePanel gamePanel;
-	private static volatile long turnTime = 100;
+	private static volatile long turnTime = 500;
 
 	public static Comparator<Path> getComparator() {
 		if(comparator == null) {

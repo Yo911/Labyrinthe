@@ -33,7 +33,6 @@ public class Gate<K,V> {
 	
 	public Set<IMouse<K,V>> getNewMouses() {
 		if(valid == false || this.mouseNumber <= 0) return null; //On ne peut plus créer de soucis par cette porte
-		System.out.println("in get new mouse : " + departures.size());
 		Set<IMouse<K,V>> newMouses = null;
 		for(INode<K,V> departure : departures) {
 			if(!departure.isUsed()) {

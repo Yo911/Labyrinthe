@@ -74,7 +74,7 @@ public class Gui extends JFrame {
 		
 		turnTimeTextField = new JFloatField();
 		turnTimeTextField.setHorizontalAlignment(SwingConstants.LEFT);
-		turnTimeTextField.setText("100");
+		turnTimeTextField.setText("500");
 		panel_3.add(turnTimeTextField);
 		turnTimeTextField.setColumns(10);
 		

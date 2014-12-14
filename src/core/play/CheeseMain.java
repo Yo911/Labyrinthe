@@ -54,17 +54,21 @@ public class CheeseMain {
 		IRoundRobin<IMouse<String,Object>> rr = new RoundRobinFIFO<>();
 		
 		Set<Gate<String, Object>> departures = CheeseSettings.getGraph().getDepartures();
-
 		
 		for(Gate<String, Object> g : departures) {
 			g.setMouseNumber(CheeseSettings.getMouseNumberForGate(g));
 		}
 
 		int nbMovements = 0, nbMovingMouses = 0, nbMousesArrivied = 0, nbTurn = 0;
-		long moveTime, timeLeft;
+		long turnTime;
 		IMouse<String, Object> m;
 		try {
 			do {
+				
+				turnTime = CheeseSettings.getTurnTime();
+				
+				final long startTime = System.currentTimeMillis();
+				
 				do {
 					
 					for(Gate<String, Object> gate : departures) {
@@ -74,33 +78,36 @@ public class CheeseMain {
 					
 					nbMovingMouses = rr.size();
 					
-					moveTime = CheeseSettings.getTurnTime();
-					timeLeft = moveTime/2;
-					moveTime -= timeLeft;
-					moveTime /= rr.size();
-					
 					m = rr.next();
-					
-					if(rr.size() != 0) {	
-						if(m.doSomething() == true) {
-							rr.remove();
-							nbMousesArrivied++;
-						}
-						if(m.hasMoved()) {
-							nbMovements++;
-						}
+						
+					if(m.doSomething() == true) {
+						rr.remove();
+						nbMousesArrivied++;
 					}
 					
-					Thread.sleep(moveTime);
+					if(m.hasMoved()) {
+						nbMovements++;
+					}
 					
 					gui.refreshData(nbMovements, nbMovingMouses, nbMousesArrivied, nbTurn);
 					
 				}while(rr.size() != 0 && rr.hasNext());
 				
 				nbTurn++;
-				Thread.sleep(timeLeft);
+				
+				gui.refreshData(nbMovements, nbMovingMouses, nbMousesArrivied, nbTurn);
+				
+				long endTime = System.currentTimeMillis();
+				
+				if(turnTime - (endTime - startTime) > 0)
+					Thread.sleep(turnTime - (endTime - startTime));
 			
 			} while(rr.size() != 0) ;
+			
+			nbMovingMouses = 0;
+			
+			gui.refreshData(nbMovements, nbMovingMouses, nbMousesArrivied, nbTurn);
+			
 		} catch (RoundRobinEmptyException | InterruptedException e) {}
 	}
 
